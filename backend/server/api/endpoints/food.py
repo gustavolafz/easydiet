@@ -1,6 +1,6 @@
 import requests
 from flask import Blueprint, request, jsonify
-from server.api.db.database import db
+from server.db.database import db
 from server.api.external_api.fatsecret import search_food
 food_bp = Blueprint("food", __name__)
 

@@ -6,9 +6,9 @@ from bson import ObjectId
 from flask import current_app
 from dotenv import load_dotenv
 from jose import jwt, JWTError
-from api.models.user import UserModel
+from server.models.user import UserModel
 from datetime import datetime, timedelta
-from api.core.security import hash_password, verify_password
+from server.core.security import hash_password, verify_password
 
 load_dotenv()
 

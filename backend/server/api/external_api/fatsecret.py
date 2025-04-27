@@ -1,4 +1,4 @@
-from server.api.core.config import Config
+from server.core.config import Config
 import requests
 
 def get_access_token():
