@@ -7,7 +7,7 @@ class UserModel(BaseModel):
     username: str
     email: str
     hashed_password: str
-    created_at: datetime = Field(default_factory=datetime.utcnow) #testee
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
     @classmethod 
     def get_by_email(cls, email: str):

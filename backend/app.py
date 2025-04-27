@@ -1,6 +1,6 @@
 import requests
 from flask import Flask, jsonify
-from server.api.core.config import Config  # Importa a configuração global
+from server.core.config import Config  # Importa a configuração global
 from server.api.endpoints import api_bp  # Importa o blueprint com os endpoints
 
 def create_app():
