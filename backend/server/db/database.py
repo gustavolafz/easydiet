@@ -1,10 +1,12 @@
 from pymongo import MongoClient
 from server.core.config import Config
 
-# Cria o cliente
-client = MongoClient(Config.MONGO_URI)
-
-# Seleciona o banco de dados
-client = MongoClient(Config.MONGO_URI)
-
-db = client[Config.MONGO_DB_NAME]
+def get_database(nome_do_banco: str):
+    """Retorna o banco de dados MongoDB."""
+    # Cria o cliente
+    client = MongoClient(Config.MONGO_URI)
+    
+    # Seleciona o banco de dados
+    db = client[nome_do_banco]
+    
+    return db

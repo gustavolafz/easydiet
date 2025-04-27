@@ -1,7 +1,8 @@
 import requests
 from flask import Blueprint, request, jsonify
-from server.db.database import db
 from server.api.external_api.fatsecret import search_food
+from server.db.database import get_database
+
 food_bp = Blueprint("food", __name__)
 
 @food_bp.route("/food/search", methods=["GET"])
