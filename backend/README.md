@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O **EasyDiet** é uma aplicação que conecta o cliente do aplicativo a informações nutricionais de alimentos de forma simples e intuitiva.  
+O **EasyDiet** é uma aplicação que conecta o cliente do aplicativo à informações nutricionais de alimentos de forma simples e intuitiva.  
 O backend é desenvolvido com **Flask**, seguindo boas práticas de organização de código, segurança e escalabilidade.
 
 Este projeto é o ponto de partida para a criação de uma plataforma web onde usuários poderão pesquisar alimentos, consultar informações nutricionais e futuramente, montar suas próprias dietas personalizadas.
@@ -12,7 +12,7 @@ Este projeto é o ponto de partida para a criação de uma plataforma web onde u
 ## Funcionalidades Desenvolvidas até Agora
 
 - **Configuração de Ambiente Segura:**  
-  Utilização de variáveis de ambiente (`.env`) para proteger dados sensíveis como `CLIENT_ID`, `CLIENT_SECRET` e `API_URL`.
+  Utilização de variáveis de ambiente (`.env`) para proteger dados sensíveis como `CLIENT_ID`, `CLIENT_SECRET` e `API_URL`. Ao clonar o repositório você deve criar seu arquivo .env e preenchê-lo com as informações necessárias, assim como no `.env.example`.
 
 - **Organização de Rotas com Blueprints:**  
   Modularização de endpoints utilizando o sistema de `Blueprints` do Flask para manter o projeto limpo e escalável.
@@ -22,9 +22,6 @@ Este projeto é o ponto de partida para a criação de uma plataforma web onde u
   - Realização de buscas simples de alimentos (por exemplo, "Apple") utilizando o token de acesso.
   - Estruturação de chamadas HTTP à API externa utilizando `requests`.
 
-- **Tratamento de IP Restrictions:**  
-  - Ajuste de permissões na API externa para permitir requisições a partir de IPs dinâmicos durante o desenvolvimento.
-
 ---
 
 ## **Estrutura do Projeto**
@@ -33,35 +30,47 @@ Este projeto é o ponto de partida para a criação de uma plataforma web onde u
 server/
 │
 ├── api/
-│   ├── endpoints/
-│   │   ├── food_search.py   # Endpoints relacionados a pesquisa de alimentos
-│   │   └── __init__.py      # Organização de Blueprints
-│   └── __init__.py          # Inicialização da API
+│   └── endpoints/
+│       ├── __init__.py           # Organização das Blueprints dos endpoints
+│       ├── food.py               # Endpoints de busca e detalhes de alimentos
+│       └── external_api/
+│           ├── __init__.py        # Inicialização da camada de chamadas externas
+│           └── fatsecret_api.py   # Integração com a API FatSecret
 │
-├── config/
-│   └── config.py            # Carregamento de variáveis de ambiente
+├── core/
+│   └── config/
+│       └── config.py     # Configurações gerais (variáveis de ambiente, etc.)
 │
-├── app.py                   # Criação da aplicação Flask
+├── db/              
+│   └── database.py                        # Conexão e configuração do MongoDB
 │
-└── .env                     # Variáveis sensíveis (não commitado no repositório)
+├── models/
+│   └── (modelos de dados)  # Estruturas dos documentos e objetos da aplicação
+│
+├── services/
+│   └── (serviços de negócio)        # Lógicas de serviço usadas nos endpoints
+│
+├── app.py           # Criação e configuração principal da aplicação Flask
+│
+└── .env             # Variáveis sensíveis (não commitado no repositório)
 ```
 
 ## Tecnologias Utilizadas
 
 - **Python 3.11+**
 - **Flask**
-- **Requests**
+- **MongoDB**
 - **FatSecret Platform API**
 
 ---
 
 ## 🎯 Próximos Passos
 
-- Implementar autenticação de usuários (login/cadastro).
+- Implementar autenticação de usuários (login/cadastro). ✅
 - Montar endpoints RESTful para gerenciar perfis e planos alimentares.
-- Criar camada de cache para o token de acesso da API externa.
 - Implementar tratamento completo de erros e logs de requisições.
 - Conectar o frontend em React com os endpoints criados.
+- Fazer o Deploy da nossa API na AWS.
 - Aplicar testes automatizados para garantir robustez do backend.
 
 ---
@@ -69,7 +78,9 @@ server/
 ## Notas
 
 - **Crie um ambiente virtual para trabalhar no projeto,** isso vai otimizar o seu tempo instalando dependências da aplicação, e tenha sempre noção de adicionar qualquer nova atualização de biblioteca ao `requirements.txt`, isso facilita muito o vercionamento do código.
-- Devido a uma limitação do serviço, durante o desenvolvimento local, **as restrições de IP da API externa não serão desabilitadas**, o que pode dificultar testes e integração, ocorra um erro de IP Inválido, acesse as **restrições no site do serviço e registre seu IP.**
+
+- Devido a uma limitação do serviço, durante o desenvolvimento local, **as restrições de IP da API externa não serão desabilitadas**, o que pode dificultar testes e integração, caso ocorra um erro de IP Inválido, acesse as **restrições no site do serviço e registre seu IP.**
+
 - Todo o projeto está sendo desenvolvido com foco em **boas práticas de engenharia de software** e **arquitetura limpa**.
 
 ---
