@@ -68,7 +68,7 @@ server/
 
 ## Notas
 
-- Durante o desenvolvimento local, as restrições de IP da API externa foram desabilitadas para facilitar testes e integração.
+- Devido a uma limitação do serviço, durante o desenvolvimento local, as restrições de IP da API externa não serão desabilitadas, o que pode dificultar testes e integração, ocorra um erro de IP Inválido, acesse as restrições no site do serviço e registre seu IP.
 - Todo o projeto está sendo desenvolvido com foco em **boas práticas de engenharia de software** e **arquitetura limpa**.
 
 ---
