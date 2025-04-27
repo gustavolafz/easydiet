@@ -68,7 +68,8 @@ server/
 
 ## Notas
 
-- Devido a uma limitação do serviço, durante o desenvolvimento local, as restrições de IP da API externa não serão desabilitadas, o que pode dificultar testes e integração, ocorra um erro de IP Inválido, acesse as restrições no site do serviço e registre seu IP.
+- **Crie um ambiente virtual para trabalhar no projeto,** isso vai otimizar o seu tempo instalando dependências da aplicação, e tenha sempre noção de adicionar qualquer nova atualização de biblioteca ao `requirements.txt`, isso facilita muito o vercionamento do código.
+- Devido a uma limitação do serviço, durante o desenvolvimento local, **as restrições de IP da API externa não serão desabilitadas**, o que pode dificultar testes e integração, ocorra um erro de IP Inválido, acesse as **restrições no site do serviço e registre seu IP.**
 - Todo o projeto está sendo desenvolvido com foco em **boas práticas de engenharia de software** e **arquitetura limpa**.
 
 ---

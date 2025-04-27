@@ -1,3 +1,5 @@
 Flask
 requests
 dotenv
+pymongo
+dnspyhton

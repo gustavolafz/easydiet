@@ -10,6 +10,8 @@ class Config:
     CLIENT_ID = os.getenv("CLIENT_ID")
     CLIENT_SECRET = os.getenv("CLIENT_SECRET")
     API_URL = os.getenv("API_URL")
+    MONGO_URI = os.getenv("MONGO_URI")
+    MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
 
     # # Validação das variáveis obrigatórias
     # if not DB_USER or not DB_PASSWORD or not DB_NAME:
