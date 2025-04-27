@@ -1,15 +1,14 @@
 # server/api/services/auth.py
 # Description: This file contains the authentication service for user registration and login.
 
-from datetime import datetime, timedelta
 import os
-from flask import current_app
-from app.models.user import UserModel
-from app.schemas.auth import UserCreateSchema, UserLoginSchema
-from app.core.security import hash_password, verify_password
-from jose import jwt, JWTError
-from dotenv import load_dotenv
 from bson import ObjectId
+from flask import current_app
+from dotenv import load_dotenv
+from jose import jwt, JWTError
+from api.models.user import UserModel
+from datetime import datetime, timedelta
+from api.core.security import hash_password, verify_password
 
 load_dotenv()
 
@@ -96,4 +95,3 @@ class AuthService:
                 return True
         except JWTError:
             raise ValueError("Invalid token")
-
