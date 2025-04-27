@@ -1,5 +1,9 @@
 Flask
 requests
-dotenv
+python-dotenv
 pymongo
-dnspyhton
+dnspython
+pydantic
+python-jose
+pydantic[email]
+passlib

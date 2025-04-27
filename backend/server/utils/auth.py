@@ -1,6 +1,6 @@
 import base64
 import requests
-from server.api.core.config import Config
+from server.core.config import Config
 
 def get_access_token():
     url = "https://oauth.fatsecret.com/connect/token"
