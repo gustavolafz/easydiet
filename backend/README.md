@@ -127,7 +127,9 @@ Ele também serve como base de aprendizado prático em Flask, APIs REST e arquit
 <!-- ## 🖋️ Autores
 
 - **Gustavo Lima**
-- **[GitHub: gustavolafz]** -->
+- **[GitHub: gustavolafz]** 
+- **OUTROS AUTORES (COLOQUEM OS NOMES)**
+- **[GitHub ou LinkedIn]** -->
 
 <!-- > Desenvolvido com ❤️ por quem acredita em comida inteligente. -->
 
