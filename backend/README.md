@@ -24,43 +24,104 @@ Este projeto é o ponto de partida para a criação de uma plataforma web onde u
 
 ---
 
-## **Estrutura do Projeto**
+## **Estrutura de Pastas do Projeto**
 
 ```bash
-server/
+├── app.py                          # Arquivo principal para inicializar o Flask
+├── .env                            # Variáveis de ambiente (não commitado)
+├── .env.example                    # Exemplo de variáveis de ambiente
+├── .gitignore                      # Arquivo para ignorar arquivos no Git
+├── README.md                       # Documentação do projeto
+├── requirements.txt                # Dependências do projeto
 │
-├── api/
-│   └── endpoints/
-│       ├── __init__.py           # Organização das Blueprints dos endpoints
-│       ├── food.py               # Endpoints de busca e detalhes de alimentos
-│       └── external_api/
-│           ├── __init__.py        # Inicialização da camada de chamadas externas
-│           └── fatsecret_api.py   # Integração com a API FatSecret
-│
-├── core/
-│   └── config/
-│       └── config.py     # Configurações gerais (variáveis de ambiente, etc.)
-│
-├── db/              
-│   └── database.py                        # Conexão e configuração do MongoDB
-│
-├── models/
-│   └── (modelos de dados)  # Estruturas dos documentos e objetos da aplicação
-│
-├── services/
-│   └── (serviços de negócio)        # Lógicas de serviço usadas nos endpoints
-│
-├── app.py           # Criação e configuração principal da aplicação Flask
-│
-└── .env             # Variáveis sensíveis (não commitado no repositório)
+├── server/
+│   ├── api/
+│   │   ├── __init__.py             # Inicialização do módulo API
+│   │   ├── endpoints/
+│   │   │   ├── __init__.py         # Inicialização dos endpoints
+│   │   │   ├── auth.py             # Endpoints de autenticação
+│   │   │   ├── food.py             # Endpoints de busca de alimentos
+│   │   ├── external_api/
+│   │       ├── __init__.py         # Inicialização do módulo de APIs externas
+│   │       ├── fatsecret.py        # Integração com a API FatSecret
+│   │
+│   ├── core/
+│   │   ├── config.py               # Configurações globais do projeto
+│   │   ├── error_handlers.py       # Manipuladores de erros globais
+│   │   ├── security.py             # Funções de segurança (hashing de senhas)
+│   │   ├── validation_middleware.py # Middleware de validação com Pydantic
+│   │
+│   ├── db/
+│   │   ├── database.py             # Conexão com o MongoDB
+│   │
+│   ├── models/
+│   │   ├── user.py                 # Modelo de usuário para MongoDB
+│   │
+│   ├── schemas/
+│   │   ├── auth.py                 # Schemas Pydantic para autenticação
+│   │   ├── user.py                 # Schemas Pydantic para usuários
+│   │
+│   ├── services/
+│   │   ├── auth.py                 # Serviço de autenticação
+│   │   ├── user.py                 # Serviço de gerenciamento de usuários
+│   │
+│   ├── utils/
+│       ├── auth.py                 # Utilitário para autenticação na API externa
+│       ├── bson_utils.py           # Utilitário para manipulação de ObjectId
+```
+## Diagrama da Arquitetura
+
+```bash
++-------------------+
+|    Frontend App   |
++-------------------+
+          |
+          v
++-------------------+
+|      Flask API    |
++-------------------+
+          |
+          v
++-------------------+       +-------------------+
+|  Endpoints (API)  |<----->|  Services Layer   |
++-------------------+       +-------------------+
+          |                         |
+          v                         v
++-------------------+       +-------------------+
+| External API (Fat |       |  Database (MongoDB|
+| Secret)           |       |  via PyMongo)     |
++-------------------+       +-------------------+
 ```
 
-## Tecnologias Utilizadas
+## 🧱 Descrição dos Componentes
+
+- **Frontend App**  
+  Interface cliente que consome a API, podendo ser uma aplicação web em React ou um app mobile.
+
+- **Flask API**  
+  Backend responsável por processar requisições HTTP e coordenar as respostas.
+
+- **Endpoints**  
+  Rotas HTTP definidas no Flask que expõem os serviços para o frontend (ex: `/login`, `/register`, etc).
+
+- **Services Layer**  
+  Camada de serviço com a lógica de negócio — autenticação, criação de usuários, atualizações, etc.
+
+- **External API**  
+  Integração com a **FatSecret Platform API** para busca e informações nutricionais de alimentos.
+
+- **Database (MongoDB)**  
+  Banco de dados NoSQL para armazenar informações persistentes dos usuários e registros relacionados.
+
+---
+
+## 🚀 Tecnologias Utilizadas
 
 - **Python 3.11+**
 - **Flask**
 - **MongoDB**
 - **FatSecret Platform API**
+
 
 ---
 
