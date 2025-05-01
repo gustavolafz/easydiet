@@ -23,7 +23,7 @@ O backend é desenvolvido com **Flask**, seguindo boas práticas de organizaçã
 ├── app.py                          # Inicia o app Flask
 ├── .env / .env.example             # Configuração de variáveis de ambiente
 ├── requirements.txt                # Dependências do projeto
-├── README.md                       # Este arquivo :)
+├── README.md                       # Este arquivo
 │
 ├── server/
 │   ├── api/
