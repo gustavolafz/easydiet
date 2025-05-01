@@ -1,75 +1,45 @@
 # 🍎 EasyDiet Backend
 
-## Visão Geral
+## 🔍 Visão Geral
 
-O **EasyDiet** é uma aplicação que conecta o cliente do aplicativo à informações nutricionais de alimentos de forma simples e intuitiva.  
-O backend é desenvolvido com **Flask**, seguindo boas práticas de organização de código, segurança e escalabilidade.
+O **EasyDiet** é uma aplicação que conecta o cliente à informações nutricionais de forma simples e intuitiva.  
+O backend é desenvolvido com **Flask**, seguindo boas práticas de organização, segurança e escalabilidade.
 
-Este projeto é o ponto de partida para a criação de uma plataforma web onde usuários poderão pesquisar alimentos, consultar informações nutricionais e futuramente, montar suas próprias dietas personalizadas.
-
----
-
-## Funcionalidades Desenvolvidas até Agora
-
-- **Configuração de Ambiente Segura:**  
-  Utilização de variáveis de ambiente (`.env`) para proteger dados sensíveis como `CLIENT_ID`, `CLIENT_SECRET` e `API_URL`. Ao clonar o repositório você deve criar seu arquivo .env e preenchê-lo com as informações necessárias, assim como no `.env.example`.
-
-- **Organização de Rotas com Blueprints:**  
-  Modularização de endpoints utilizando o sistema de `Blueprints` do Flask para manter o projeto limpo e escalável.
-
-- **Integração com API Externa (FatSecret):**  
-  - Configuração inicial de autenticação OAuth2.
-  - Realização de buscas simples de alimentos (por exemplo, "Apple") utilizando o token de acesso.
-  - Estruturação de chamadas HTTP à API externa utilizando `requests`.
+> 💡 Este projeto é a fundação para uma futura plataforma onde usuários poderão buscar alimentos, consultar informações nutricionais e montar suas dietas personalizadas.
 
 ---
 
-## **Estrutura de Pastas do Projeto**
+## ✅ Funcionalidades Desenvolvidas
+
+- 🔐 **Ambiente Seguro** com `.env` para armazenar `CLIENT_ID`, `CLIENT_SECRET`, etc.
+- 🧩 **Organização por Blueprints** para modularização dos endpoints.
+- 🔗 **Integração com a API FatSecret** (OAuth2 + buscas de alimentos via `requests`).
+
+---
+
+## 📁 Estrutura de Pastas
 
 ```bash
-├── app.py                          # Arquivo principal para inicializar o Flask
-├── .env                            # Variáveis de ambiente (não commitado)
-├── .env.example                    # Exemplo de variáveis de ambiente
-├── .gitignore                      # Arquivo para ignorar arquivos no Git
-├── README.md                       # Documentação do projeto
+├── app.py                          # Inicia o app Flask
+├── .env / .env.example             # Configuração de variáveis de ambiente
 ├── requirements.txt                # Dependências do projeto
+├── README.md                       # Este arquivo :)
 │
 ├── server/
 │   ├── api/
-│   │   ├── __init__.py             # Inicialização do módulo API
-│   │   ├── endpoints/
-│   │   │   ├── __init__.py         # Inicialização dos endpoints
-│   │   │   ├── auth.py             # Endpoints de autenticação
-│   │   │   ├── food.py             # Endpoints de busca de alimentos
-│   │   ├── external_api/
-│   │       ├── __init__.py         # Inicialização do módulo de APIs externas
-│   │       ├── fatsecret.py        # Integração com a API FatSecret
-│   │
-│   ├── core/
-│   │   ├── config.py               # Configurações globais do projeto
-│   │   ├── error_handlers.py       # Manipuladores de erros globais
-│   │   ├── security.py             # Funções de segurança (hashing de senhas)
-│   │   ├── validation_middleware.py # Middleware de validação com Pydantic
-│   │
-│   ├── db/
-│   │   ├── database.py             # Conexão com o MongoDB
-│   │
-│   ├── models/
-│   │   ├── user.py                 # Modelo de usuário para MongoDB
-│   │
-│   ├── schemas/
-│   │   ├── auth.py                 # Schemas Pydantic para autenticação
-│   │   ├── user.py                 # Schemas Pydantic para usuários
-│   │
-│   ├── services/
-│   │   ├── auth.py                 # Serviço de autenticação
-│   │   ├── user.py                 # Serviço de gerenciamento de usuários
-│   │
-│   ├── utils/
-│       ├── auth.py                 # Utilitário para autenticação na API externa
-│       ├── bson_utils.py           # Utilitário para manipulação de ObjectId
+│   │   ├── endpoints/              # Rotas: auth, food
+│   │   └── external_api/           # Comunicação com a FatSecret API
+│   ├── core/                       # Configs, segurança, middleware
+│   ├── db/                         # Conexão com MongoDB
+│   ├── models/                     # Modelos do banco
+│   ├── schemas/                    # Schemas Pydantic
+│   ├── services/                   # Lógica de negócio
+│   └── utils/                      # Helpers gerais
 ```
-## Diagrama da Arquitetura
+
+---
+
+## 🧠 Arquitetura da Aplicação
 
 ```bash
 +-------------------+
@@ -88,77 +58,76 @@ Este projeto é o ponto de partida para a criação de uma plataforma web onde u
           |                         |
           v                         v
 +-------------------+       +-------------------+
-| External API (Fat |       |  Database (MongoDB|
-| Secret)           |       |  via PyMongo)     |
+| External API      |       |  MongoDB Database |
+| (FatSecret)       |       | (via PyMongo)     |
 +-------------------+       +-------------------+
 ```
 
+---
+
 ## 🧱 Descrição dos Componentes
 
-- **Frontend App**  
-  Interface cliente que consome a API, podendo ser uma aplicação web em React ou um app mobile.
+- 🎨 **Frontend App**  
+  Cliente que consome a API — web (React) ou mobile.
 
-- **Flask API**  
-  Backend responsável por processar requisições HTTP e coordenar as respostas.
+- ⚙️ **Flask API**  
+  Camada backend que processa requisições e integra componentes.
 
-- **Endpoints**  
-  Rotas HTTP definidas no Flask que expõem os serviços para o frontend (ex: `/login`, `/register`, etc).
+- 🚪 **Endpoints**  
+  Rotas HTTP do Flask que expõem os serviços (ex: `/login`, `/search`).
 
-- **Services Layer**  
-  Camada de serviço com a lógica de negócio — autenticação, criação de usuários, atualizações, etc.
+- 🧠 **Services Layer**  
+  Lógica de negócio: autenticação, manipulação de usuários, etc.
 
-- **External API**  
-  Integração com a **FatSecret Platform API** para busca e informações nutricionais de alimentos.
+- 🌐 **External API (FatSecret)**  
+  Fornece informações nutricionais via autenticação OAuth2.
 
-- **Database (MongoDB)**  
-  Banco de dados NoSQL para armazenar informações persistentes dos usuários e registros relacionados.
+- 💾 **Database (MongoDB)**  
+  Armazenamento de dados com modelagem flexível e persistência.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Python 3.11+**
-- **Flask**
-- **MongoDB**
-- **FatSecret Platform API**
-
-
----
-
-## 🎯 Próximos Passos
-
-- Implementar autenticação de usuários (login/cadastro). ✅
-- Montar endpoints RESTful para gerenciar perfis e planos alimentares.
-- Implementar tratamento completo de erros e logs de requisições.
-- Conectar o frontend em React com os endpoints criados.
-- Fazer o Deploy da nossa API na AWS.
-- Aplicar testes automatizados para garantir robustez do backend.
+- 🐍 **Python 3.11+**
+- 🔥 **Flask**
+- 🍃 **MongoDB**
+- 🥗 **FatSecret Platform API**
+- 📦 **Pydantic**, **PyMongo**, **Requests**
 
 ---
 
-## Notas
+## 🛠️ Próximos Passos
 
-- **Crie um ambiente virtual para trabalhar no projeto,** isso vai otimizar o seu tempo instalando dependências da aplicação, e tenha sempre noção de adicionar qualquer nova atualização de biblioteca ao `requirements.txt`, isso facilita muito o vercionamento do código.
+- [x] Implementar autenticação de usuários
+- [ ] Criar endpoints RESTful para perfis e planos alimentares
+- [ ] Adicionar tratamento robusto de erros e logging
+- [ ] Conectar com frontend em React
+- [ ] Realizar deploy na AWS
+- [ ] Adicionar testes automatizados
 
-- Devido a uma limitação do serviço, durante o desenvolvimento local, **as restrições de IP da API externa não serão desabilitadas**, o que pode dificultar testes e integração, caso ocorra um erro de IP Inválido, acesse as **restrições no site do serviço e registre seu IP.**
+---
 
-- Todo o projeto está sendo desenvolvido com foco em **boas práticas de engenharia de software** e **arquitetura limpa**.
+## 📝 Notas
+
+- Crie um **ambiente virtual** para facilitar instalação de dependências.
+- Sempre mantenha o `requirements.txt` atualizado.
+- Em caso de erro "IP Inválido" da API externa, **registre seu IP no painel da FatSecret.**
+- A arquitetura segue princípios de **Clean Code** e **Engenharia de Software Profissional**.
 
 ---
 
 ## 💡 Sobre o Projeto
 
-O **EasyDiet** tem como missão de atuar como servidor que se comunica com uma API Externa para um aplicativo que facilita o acesso a informações nutricionais confiáveis de forma descomplicada, permitindo que qualquer pessoa possa planejar melhor sua alimentação.
-
-Esse projeto também é parte do processo de aprendizado profundo em desenvolvimento backend, com o objetivo de formar uma equipe de desenvolvedores de **nível internacional** em Flask e arquitetura de APIs.
+O **EasyDiet** é um servidor backend robusto que facilita o acesso a dados nutricionais confiáveis.  
+Ele também serve como base de aprendizado prático em Flask, APIs REST e arquitetura de software — mirando **padrões internacionais de qualidade**.
 
 ---
 
-<!-- > Desenvolvido com ❤️ e dedicação para criar um backend de alta qualidade!
-
---- -->
-
 <!-- ## 🖋️ Autores
 
-- **Nome:** [Seu Nome Aqui]
-- **Contato:** [Seu contato GitHub, email, etc.] -->
+- **Gustavo Lima**
+- **[GitHub: gustavolafz]** -->
+
+<!-- > Desenvolvido com ❤️ por quem acredita em comida inteligente. -->
+
