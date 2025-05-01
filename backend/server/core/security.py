@@ -1,4 +1,4 @@
-# server/api/core/security.py
+# server/core/security.py
 # Description: This file contains the security functions for password hashing and verification.
 
 from passlib.context import CryptContext

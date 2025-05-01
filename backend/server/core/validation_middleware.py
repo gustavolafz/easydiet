@@ -1,8 +1,8 @@
-# server/api/core/validation_middleware.py
+# server/core/validation_middleware.py
 # Description: This file contains the validation middleware for Flask API using Pydantic.
 
-from flask import request, jsonify
 from functools import wraps 
+from flask import request, jsonify
 from pydantic import ValidationError
 
 def validate_json(schema):

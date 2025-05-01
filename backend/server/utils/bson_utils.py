@@ -1,7 +1,7 @@
 # server/utils/bson_utils.py
 # Description: Utility functions for handling BSON ObjectId in Pydantic models.
 
-from bson import ObjectId
+from utils.bson_utils import PyObjectId as ObjectId
 
 class PyObjectId(ObjectId):
     @classmethod

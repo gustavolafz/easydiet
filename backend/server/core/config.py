@@ -1,3 +1,6 @@
+# server/core/config.py
+# Description: This file contains the configuration settings for the Flask application, including loading environment variables from a .env file.
+
 import os
 from dotenv import load_dotenv
 

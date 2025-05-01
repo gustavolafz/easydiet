@@ -1,3 +1,6 @@
+# server/utils/auth.py
+# Description: This file contains the authentication logic for the FatSecret API.
+
 import base64
 import requests
 from server.core.config import Config

@@ -1,5 +1,8 @@
-from server.core.config import Config
+# server/api/external_api/fatsecret.py
+# Description: This file contains the functions to interact with the FatSecret API for food search.
+
 import requests
+from server.core.config import Config
 
 def get_access_token():
     """Obtém o token de acesso OAuth 2.0 da FatSecret."""

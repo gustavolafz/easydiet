@@ -5,6 +5,8 @@ import requests
 from flask_cors import CORS
 from flask import Flask, jsonify
 from server.core.config import Config
+from server.api.endpoints.auth import auth_bp
+from server.api.endpoints.food import food_bp
 from server.core.error_handlers import register_error_handlers
 
 def create_app():
@@ -18,8 +20,9 @@ def create_app():
     
     register_error_handlers(app)  # Registra os manipuladores de erro
 
-    # Registra o blueprint com prefixo '/api'
-    app.register_blueprint(api_bp, url_prefix='/api')
+    # Registra os blueprints
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(food_bp, url_prefix='')
 
     return app
 

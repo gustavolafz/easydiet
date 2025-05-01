@@ -1,3 +1,6 @@
+# server/api/endpoints/food.py
+# Description: This file contains the endpoint for searching food items using the FatSecret API.
+
 import requests
 from flask import Blueprint, request, jsonify
 from server.api.external_api.fatsecret import search_food

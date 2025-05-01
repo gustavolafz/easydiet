@@ -1,13 +1,13 @@
-# server/api/services/auth.py
+# server/services/auth.py
 # Description: This file contains the authentication service for user registration and login.
 
 import os
-from bson import ObjectId
 from flask import current_app
 from dotenv import load_dotenv
 from jose import jwt, JWTError
 from server.models.user import UserModel
 from datetime import datetime, timedelta
+from utils.bson_utils import PyObjectId as ObjectId
 from server.core.security import hash_password, verify_password
 
 load_dotenv()

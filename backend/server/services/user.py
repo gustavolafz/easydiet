@@ -1,5 +1,8 @@
+# server/services/user.py
+# Description: This file contains the user service for managing user data.
+
 from flask import current_app
-from bson import ObjectId
+from utils.bson_utils import PyObjectId as ObjectId
 
 class UserService:
     def __init__(self):
@@ -47,4 +50,3 @@ class UserService:
         if result.deleted_count == 0:
             raise ValueError("User not found")
         return {"message": "user deleted successfully"}
-    

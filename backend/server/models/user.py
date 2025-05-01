@@ -1,12 +1,12 @@
 # server/models/user.py
 # Description: User model for MongoDB with Pydantic validation.
 
-from bson import ObjectId
 from typing import Optional
 from datetime import datetime
 from server.db import get_database
 from server.utils.bson_utils import PyObjectId
 from pydantic import BaseModel, Field, EmailStr
+from utils.bson_utils import PyObjectId as ObjectId
 
 class UserModel(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
