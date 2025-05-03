@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from jose import jwt, JWTError
 from server.models.user import UserModel
 from datetime import datetime, timedelta
-from utils.bson_utils import PyObjectId as ObjectId
+from server.utils.bson_utils import PyObjectId as ObjectId
 from server.core.security import hash_password, verify_password
 
 load_dotenv()

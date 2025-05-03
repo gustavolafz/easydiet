@@ -2,7 +2,7 @@
 # Description: This file contains the user service for managing user data.
 
 from flask import current_app
-from utils.bson_utils import PyObjectId as ObjectId
+from server.utils.bson_utils import PyObjectId as ObjectId
 
 class UserService:
     def __init__(self):

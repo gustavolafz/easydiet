@@ -3,21 +3,20 @@
 
 from typing import Optional
 from datetime import datetime
-from server.db import get_database
+from server.db.database import get_database
 from server.utils.bson_utils import PyObjectId
 from pydantic import BaseModel, Field, EmailStr
-from utils.bson_utils import PyObjectId as ObjectId
 
 class UserModel(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     username: str
     email: EmailStr
     hashed_password: str
-    created_at: datetime = Field(default_factory=datetime.timezone.utc)
+    created_at: datetime = Field(default_factory=datetime.astimezone)
 
     class Config:
         allow_population_by_field_name = True
-        json_encoders = {ObjectId: str}
+        json_encoders = {PyObjectId: str}
 
     @classmethod
     def get_by_email(cls, email: str):
