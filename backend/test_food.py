@@ -1,7 +1,7 @@
 import pytest
 from flask import Flask
 from flask.testing import FlaskClient
-from server.routes.food import food_bp
+from server.api.endpoints.food import food_bp
 
 @pytest.fixture
 def app():
@@ -13,6 +13,7 @@ def app():
 def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
+@food_bp.route('/food/search', methods=['GET'])
 def test_search_food_route(client: FlaskClient, monkeypatch):
     # Mock search_food function
     def mock_search_food(food_name):
