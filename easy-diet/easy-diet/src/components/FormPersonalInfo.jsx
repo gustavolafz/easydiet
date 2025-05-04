@@ -9,6 +9,8 @@ const FormPersonalInfo = ({ onSubmit }) => {
         height: "",
         activityLevel: "",
         goal: "",
+        gender: "",
+        birthDate: "",
     });
 
     const handleChange = (e) => {
@@ -19,7 +21,6 @@ const FormPersonalInfo = ({ onSubmit }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Personal Info Submitted:", personalData);
-        onSubmit(personalData); // Callback to handle the submitted data
     };
 
     return (
@@ -43,6 +44,23 @@ const FormPersonalInfo = ({ onSubmit }) => {
                     cadastro.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-6 py-4">
+                <div>
+                        <label
+                            htmlFor="birthDate"
+                            className="block text-base font-medium text-gray-700"
+                        >
+                            Data de Nascimento:
+                        </label>
+                        <input
+                            type="date"
+                            id="birthDate"
+                            name="birthDate"
+                            value={personalData.birthDate}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-base"
+                        />
+                    </div>
                     <div>
                         <label
                             htmlFor="weight"
@@ -76,6 +94,27 @@ const FormPersonalInfo = ({ onSubmit }) => {
                             required
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-base"
                         />
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="gender"
+                            className="block text-base font-medium text-gray-700"
+                        >
+                            Gênero:
+                        </label>
+                        <select
+                            id="gender"
+                            name="gender"
+                            value={personalData.gender}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-base"
+                        >
+                            <option value="">Selecione</option>
+                            <option value="male">Masculino</option>
+                            <option value="female">Feminino</option>
+                            <option value="other">Prefiro não dizer</option>
+                        </select>
                     </div>
                     <div>
                         <label
@@ -120,6 +159,7 @@ const FormPersonalInfo = ({ onSubmit }) => {
                         className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-base"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={handleSubmit}
                     >
                         Enviar
                     </motion.button>

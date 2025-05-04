@@ -5,3 +5,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Animação para rotacionar o gradiente */
+@keyframes gradientRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Adicionando a animação ao fundo */
+.bg-gradient-rotate {
+  background-size: 400% 400%;
+  animation: gradientRotate 10s ease infinite;
+}

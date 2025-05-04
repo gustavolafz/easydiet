@@ -8,7 +8,6 @@ export const metadata = {
 export default function Index() {
     return (
         <div>
-            <Navbar />
         </div>
     )
 }

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -8,10 +8,14 @@ import {
     PersonIcon,
     HamburgerMenuIcon,
     HeartIcon,
+    DotsHorizontalIcon,  // Importando o ícone de "três pontinhos" horizontal
 } from '@radix-ui/react-icons';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
-    const [selected, setSelected] = useState(null);
+    const pathname = usePathname();
+    const [selected, setSelected] = useState(pathname);
 
     const handleSelect = (option) => {
         setSelected(option);
@@ -33,12 +37,12 @@ const Navbar = () => {
     return (
         <nav className="flex flex-row justify-center items-center bg-green-600 p-2 fixed bottom-0 w-full h-16">
             <ul className="flex justify-around w-full">
-                {[
-                    { id: 'dashboard', Icon: DashboardIcon, title: 'Dashboard' },
-                    { id: 'daily', Icon: HamburgerMenuIcon, title: 'Daily' },
-                    { id: 'easydiet', Icon: HeartIcon, title: 'EasyDiet' },
-                    { id: 'calendar', Icon: CalendarIcon, title: 'Calendar' },
-                    { id: 'user', Icon: PersonIcon, title: 'User' },
+                {[ 
+                    { id: '/dashboard', Icon: DashboardIcon, title: 'Dashboard' },
+                    { id: '/daily', Icon: HamburgerMenuIcon, title: 'Daily' },
+                    { id: '/easydiet', Icon: HeartIcon, title: 'EasyDiet' },
+                    { id: '/calendar', Icon: CalendarIcon, title: 'Calendar' },
+                    { id: '/profile', Icon: DotsHorizontalIcon, title: 'Profile' },  // Usando DotsHorizontalIcon
                 ].map(({ id, Icon, title }) => (
                     <motion.li
                         key={id}
@@ -49,7 +53,9 @@ const Navbar = () => {
                         animate={selected === id ? 'selected' : 'initial'}
                         whileHover="hover"
                     >
-                        <Icon className="text-4xl" title={title} />
+                        <Link href={id}>
+                            <Icon className="text-4xl" title={title} />
+                        </Link>
                     </motion.li>
                 ))}
             </ul>

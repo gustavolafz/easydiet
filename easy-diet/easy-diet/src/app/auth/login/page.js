@@ -1,6 +1,12 @@
 import FormLogin from "@/components/Formlogin";
 
-export default function Home() {
+export const metadata = {
+  title: "Login",
+  description: "página de login do app EasyDiet",
+};
+
+
+export default function Login() {
   return (
     <main
       className="flex flex-col items-center min-h-screen justify-center bg-cover bg-center"
