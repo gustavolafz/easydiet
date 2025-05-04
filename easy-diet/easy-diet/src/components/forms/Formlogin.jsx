@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import FormPersonalInfo from './FormPersonalInfo';
-import Cookies from 'js-cookie';
 
 const FormLogin = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -32,7 +31,6 @@ const FormLogin = () => {
         return;
       }
 
-      // Avança para segunda etapa
       setUserData({
         email: formData.email,
         password: formData.password,
@@ -43,11 +41,8 @@ const FormLogin = () => {
       return;
     }
 
-    // Login normal
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-
     try {
-      const response = await fetch(`${SERVER_URL}/auth/login`, {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -58,14 +53,12 @@ const FormLogin = () => {
 
       const data = await response.json();
 
+      console.log(data)
+
       if (!response.ok) throw new Error(data.message || 'Erro no login');
 
-      // Salva o token nos cookies
-      Cookies.set('access_token', data.access_token, { expires: 7, secure: true });
-
       alert('Login realizado com sucesso!');
-      // Redirecionar após o login
-      window.location.href = '/dashboard'; // Altere para a página que você deseja redirecionar após o login
+      window.location.href = '/dashboard';
     } catch (err) {
       alert(err.message);
     }
@@ -76,12 +69,7 @@ const FormLogin = () => {
   }
 
   return (
-    <motion.div
-      className="flex flex-col items-center justify-center font-inter w-90"
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.div className="flex flex-col items-center justify-center font-inter w-90">
       <motion.div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
         <motion.h2 className="text-3xl font-bold text-center mb-6 text-green-600">
           {isRegister ? 'Register' : 'Login'}
@@ -96,7 +84,6 @@ const FormLogin = () => {
           )}
           <Input label="Email" name="email" type="email" value={formData.email} onChange={handleChange} />
           <Input label="Password" name="password" type="password" value={formData.password} onChange={handleChange} />
-
           {isRegister && (
             <Input
               label="Confirm Password"
@@ -106,7 +93,6 @@ const FormLogin = () => {
               onChange={handleChange}
             />
           )}
-
           <motion.button type="submit" className="btn-green">
             {isRegister ? 'Avançar' : 'Login'}
           </motion.button>

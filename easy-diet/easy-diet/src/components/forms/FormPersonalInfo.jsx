@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import Cookies from 'js-cookie';
 
 const FormPersonalInfo = ({ baseData }) => {
   const [personalData, setPersonalData] = useState({
@@ -21,29 +20,20 @@ const FormPersonalInfo = ({ baseData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const payload = {
-      ...baseData,
-      ...personalData,
-    };
-
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+    const payload = { ...baseData, ...personalData };
 
     try {
-      const response = await fetch(`${SERVER_URL}/auth/register`, {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Erro ao registrar');
 
-      if (!response.ok) throw new Error(data.message || 'Erro ao registrar');
-
-      alert('Cadastro realizado com sucesso!');
-
-      // Após o cadastro, fazer login automaticamente
-      const loginResponse = await fetch(`${SERVER_URL}/auth/login`, {
+      // auto-login após cadastro
+      const loginRes = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -52,27 +42,18 @@ const FormPersonalInfo = ({ baseData }) => {
         }),
       });
 
-      const loginData = await loginResponse.json();
+      const loginData = await loginRes.json();
+      if (!loginRes.ok) throw new Error(loginData.message || 'Erro ao fazer login');
 
-      if (!loginResponse.ok) throw new Error(loginData.message || 'Erro ao fazer login');
-
-      // Salva o token nos cookies
-      Cookies.set('access_token', loginData.access_token, { expires: 7, secure: true });
-
-      // Redireciona para a página do dashboard ou onde desejar
-      window.location.href = '/dashboard'; // Altere conforme necessário
+      alert('Cadastro realizado com sucesso!');
+      window.location.href = '/dashboard';
     } catch (err) {
       alert(err.message);
     }
   };
 
   return (
-    <motion.div
-      className="flex flex-col items-center justify-center font-inter w-90"
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.div className="flex flex-col items-center justify-center font-inter w-90">
       <motion.div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6 text-green-600">
           Informações Adicionais
