@@ -1,9 +1,6 @@
 # server/services/auth.py
 # Description: This file contains the authentication service for user registration and login.
 
-import os
-from flask import current_app
-from dotenv import load_dotenv
 from jose import jwt, JWTError
 from server.models.user import UserModel
 from datetime import datetime, timedelta
@@ -37,7 +34,7 @@ class AuthService:
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
-            hashed_password=hashed_password,
+            password= hashed_password,
             activityLevel=user_data["activityLevel"],
             birthDate=user_data["birthDate"],
             gender=user_data["gender"],
@@ -58,7 +55,7 @@ class AuthService:
         if not user:
             raise ValueError("User not found")
 
-        if not verify_password(user_data['password'], user["hashed_password"]):
+        if not verify_password(user_data['password'], user["password"]):
             raise ValueError("Invalid password")
 
         token = self._create_token(

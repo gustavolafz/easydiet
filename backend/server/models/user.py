@@ -10,7 +10,7 @@ class UserModel(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    hashed_password: str
+    password: str
     activityLevel: str
     birthDate: str
     gender: str
