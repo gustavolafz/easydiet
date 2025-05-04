@@ -2,7 +2,8 @@
 # Description: This is the main entry point for the Flask application. It initializes the app, registers blueprints, and sets up error handling.
 # Descrição: Este é o ponto de entrada principal para a aplicação Flask. Ele inicializa o app, registra blueprints e configura o tratamento de erros.
 
-from flask import Flask
+from flask import Flask, request
+from middleware import jwt_middleware
 from flask_cors import CORS
 from server.core.config import Config
 from server.api.endpoints.auth import auth_bp
@@ -28,6 +29,14 @@ def create_app() -> Flask:
 
 # Inicializa a aplicação
 app = create_app()
+
+@app.before_request
+def run_middleware():
+    if request.endpoint not in ['auth.login_user', 'auth.register_user']:  # nomes exatos das funções
+        result = jwt_middleware()
+        if result:
+            return result
+
 
 if __name__ == "__main__":
     app.run(debug=True)

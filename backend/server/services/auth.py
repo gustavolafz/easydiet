@@ -73,7 +73,7 @@ class AuthService:
             upsert=True
         )
 
-        return {"token": token, "token_type": "refresh"}
+        return {"access_token": token, "token_type": "bearer"}
 
     def _create_token(self, data: dict, expires_delta: timedelta):
         to_encode = data.copy()
