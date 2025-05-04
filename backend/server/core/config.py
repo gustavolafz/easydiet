@@ -5,7 +5,8 @@ import os
 from dotenv import load_dotenv
 
 # Carrega variáveis de ambiente do arquivo .env
-load_dotenv('.env')
+load_dotenv()
+
 
 class Config:
     """Configurações globais da aplicação."""

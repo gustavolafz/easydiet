@@ -9,14 +9,12 @@ from server.models.user import UserModel
 from datetime import datetime, timedelta
 from server.utils.bson_utils import PyObjectId as ObjectId
 from server.core.security import hash_password, verify_password
-
-load_dotenv()
+from server.db.database import get_database
 
 class AuthService:
     def __init__(self):
-        self.db = current_app.mongo
+        self.db = get_database()
         self.ACCESS_TOKEN_EXPIRE_DAYS = 7
-        self.SECRET_KEY = os.getenv("SECRET_KEY")
 
     def _get_user_by_id(self, user_id: str):
         return self.db.users.find_one({
@@ -24,19 +22,34 @@ class AuthService:
         })
 
     def register(self, user_data: dict):
+        # Verifica se o email já está registrado
         existing_user = self.db.users.find_one({"email": user_data["email"]})
         if existing_user:
             raise ValueError("User with this email already exists")
 
+        # Faz o hash da senha
         hashed_password = hash_password(user_data["password"])
+
+        # Cria o usuário com todos os campos obrigatórios
         user = UserModel(
-            username=user_data["username"],
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
             email=user_data["email"],
             hashed_password=hashed_password,
+            activityLevel=user_data["activityLevel"],
+            birthDate=user_data["birthDate"],
+            gender=user_data["gender"],
+            goal=user_data["goal"],
+            height=user_data["height"],
+            weight=user_data["weight"],
         )
 
-        result = self.db.users.insert_one(user.model_dump())
+        # Insere o usuário no banco de dados
+        result = self.db.users.insert_one(user.dict())
+
+        # Retorna o id do usuário criado
         return {"user_id": str(result.inserted_id)}
+
 
     def login(self, user_data: dict):
         user = self.db.users.find_one({"email": user_data["email"]})

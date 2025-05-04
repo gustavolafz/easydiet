@@ -1,5 +1,7 @@
 Flask
 flask_cors
+bcrypt
+pytz
 requests
 python-dotenv
 pymongo

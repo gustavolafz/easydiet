@@ -22,7 +22,7 @@ def create_app() -> Flask:
     # Registra rotas da aplicação usando Blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(user_bp, url_prefix='/user')
-    app.register_blueprint(food_bp, url_prefix='')
+    app.register_blueprint(food_bp, url_prefix='/food')
 
     return app
 
