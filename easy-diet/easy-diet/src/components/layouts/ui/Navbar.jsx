@@ -42,7 +42,7 @@ const Navbar = () => {
                     { id: '/daily', Icon: HamburgerMenuIcon, title: 'Daily' },
                     { id: '/easydiet', Icon: HeartIcon, title: 'EasyDiet' },
                     { id: '/calendar', Icon: CalendarIcon, title: 'Calendar' },
-                    { id: '/profile', Icon: DotsHorizontalIcon, title: 'Profile' },  // Usando DotsHorizontalIcon
+                    { id: '/more', Icon: DotsHorizontalIcon, title: 'More' },  // Usando DotsHorizontalIcon
                 ].map(({ id, Icon, title }) => (
                     <motion.li
                         key={id}

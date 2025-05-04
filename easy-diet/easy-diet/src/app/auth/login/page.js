@@ -1,4 +1,4 @@
-import FormLogin from "@/components/Formlogin";
+import FormLogin from "@/components/forms/Formlogin";
 
 export const metadata = {
   title: "Login",

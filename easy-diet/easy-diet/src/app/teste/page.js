@@ -1,4 +1,4 @@
-import FoodCard from '@/components/FoodCard';
+import FoodCard from '@/components/ui/FoodCard';
 import React from 'react';
 
 const foodData = [
