@@ -8,8 +8,8 @@ class UserCreateSchema(BaseModel):
     last_name: str
     email: EmailStr
     password: str
-    activityLevel: str
-    birthDate: str
+    activity_level: str
+    birth_date: str
     gender: str
     goal: str
     height: str

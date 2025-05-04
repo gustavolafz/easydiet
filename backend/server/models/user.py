@@ -6,13 +6,13 @@ from pydantic import BaseModel, Field, EmailStr
 import pytz
 
 class UserModel(BaseModel):
-    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    id: Optional[PyObjectId] = Field(default=None, alias="_id")
     first_name: str
     last_name: str
     email: EmailStr
     password: str
-    activityLevel: str
-    birthDate: str
+    activity_level: str
+    birth_date: str
     gender: str
     goal: str
     height: str
@@ -22,6 +22,8 @@ class UserModel(BaseModel):
     class Config:
         allow_population_by_field_name = True
         json_encoders = {PyObjectId: str}
+        populate_by_name = True  # Isso ajuda a respeitar o alias na hora de criar o objeto
+
 
     @classmethod
     def get_by_email(cls, email: str):

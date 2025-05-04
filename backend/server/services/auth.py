@@ -34,17 +34,17 @@ class AuthService:
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
-            password= hashed_password,
-            activityLevel=user_data["activityLevel"],
-            birthDate=user_data["birthDate"],
+            password=hashed_password,
+            activity_level=user_data["activity_level"],
+            birth_date=user_data["birth_date"],
             gender=user_data["gender"],
             goal=user_data["goal"],
             height=user_data["height"],
             weight=user_data["weight"],
         )
 
-        # Insere o usuário no banco de dados
-        result = self.db.users.insert_one(user.dict())
+        # Remove o campo 'id' para não sobrescrever o _id do MongoDB
+        result = self.db.users.insert_one(user.dict(by_alias=True, exclude={"id"}))
 
         # Retorna o id do usuário criado
         return {"user_id": str(result.inserted_id)}
@@ -63,17 +63,19 @@ class AuthService:
             expires_delta=timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS),
         )
 
+        expires_at = datetime.utcnow() + timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS)
+
         # salva ou atualiza o token no banco
         self.db.tokens.update_one(
             {"user_id": str(user["_id"])},
             {"$set": {
                 "refresh_token": token,
-                "expires_at": datetime.utcnow() + timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS)
+                "expires_at": expires_at
             }},
             upsert=True
         )
 
-        return {"access_token": token, "token_type": "bearer"}
+        return {"access_token": token, "token_type": "bearer", "expires_at": expires_at}
 
     def _create_token(self, data: dict, expires_delta: timedelta):
         to_encode = data.copy()
