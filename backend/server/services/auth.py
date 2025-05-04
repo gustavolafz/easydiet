@@ -10,11 +10,13 @@ from datetime import datetime, timedelta
 from server.utils.bson_utils import PyObjectId as ObjectId
 from server.core.security import hash_password, verify_password
 from server.db.database import get_database
+from server.core.config import Config
 
 class AuthService:
     def __init__(self):
         self.db = get_database()
         self.ACCESS_TOKEN_EXPIRE_DAYS = 7
+        self.SECRET_KEY = Config.JWT_SECRET
 
     def _get_user_by_id(self, user_id: str):
         return self.db.users.find_one({
@@ -59,52 +61,48 @@ class AuthService:
         if not verify_password(user_data['password'], user["hashed_password"]):
             raise ValueError("Invalid password")
 
-        access_token = self._create_token(
+        token = self._create_token(
             data={"sub": str(user["_id"])},
             expires_delta=timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS),
         )
 
-        return {"access_token": access_token, "token_type": "bearer"}
+        # salva ou atualiza o token no banco
+        self.db.tokens.update_one(
+            {"user_id": str(user["_id"])},
+            {"$set": {
+                "refresh_token": token,
+                "expires_at": datetime.utcnow() + timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS)
+            }},
+            upsert=True
+        )
+
+        return {"token": token, "token_type": "refresh"}
 
     def _create_token(self, data: dict, expires_delta: timedelta):
-        """
-        Create a new JWT token with the given data and expiration time.
-
-        Args:
-            data (dict): Data to encode in the token.
-            expires_delta (timedelta): Time delta for the token to expire.
-
-        Returns:
-            str: The encoded JWT token.
-        """
         to_encode = data.copy()
         expire = datetime.utcnow() + expires_delta
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, self.SECRET_KEY, algorithm="HS256")
 
     def verify_token(self, token: str):
-        """
-        Verify a JWT token and returns if the user exists.
-
-        Args:
-            token (str): The token to verify.
-
-        Returns:
-            bool: Boolean indicating the validity of the jwt token.
-        
-        Raises:
-            ValueError: If the token is invalid.
-        """
         try:
-                payload = jwt.decode(token, self.SECRET_KEY, algorithms=["HS256"])
-                user_id = payload.get("sub")
-                if user_id is None:
-                    raise ValueError("Invalid token")
+            payload = jwt.decode(token, self.SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get("sub")
+            if user_id is None:
+                raise ValueError("Invalid token")
 
-                found_user = self._get_user_by_id(user_id)
-                if not found_user:
-                    return False
-            
-                return True
+            # checar se o token ainda está registrado no banco
+            token_record = self.db.tokens.find_one({
+                "user_id": user_id,
+                "refresh_token": token
+            })
+
+            if not token_record:
+                raise ValueError("Token not found or revoked")
+
+            if token_record["expires_at"] < datetime.utcnow():
+                raise ValueError("Token expired")
+
+            return True
         except JWTError:
             raise ValueError("Invalid token")

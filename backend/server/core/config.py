@@ -16,6 +16,7 @@ class Config:
     API_URL = os.getenv("API_URL")
     MONGO_URI = os.getenv("MONGO_URI")
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
+    JWT_SECRET = os.getenv("JWT_SECRET")
 
     # # Validação das variáveis obrigatórias
     # if not DB_USER or not DB_PASSWORD or not DB_NAME:
