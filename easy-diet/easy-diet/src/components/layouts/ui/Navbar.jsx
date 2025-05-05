@@ -22,7 +22,7 @@ const Navbar = () => {
     };
 
     const getIconStyle = (option) =>
-        `rounded-full p-2 transition duration-300 ${
+        `rounded-full p-2 transition duration-100 ${
             selected === option
                 ? 'bg-white text-black'
                 : 'bg-transparent text-white hover:text-green-200'
