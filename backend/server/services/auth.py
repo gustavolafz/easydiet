@@ -75,7 +75,14 @@ class AuthService:
             upsert=True
         )
 
-        return {"access_token": token, "token_type": "bearer", "expires_at": expires_at}
+        return {
+        "user": {k: str(v) for k, v in user.items() if k != "password"},
+        "token": {
+            "access_token": token,
+            "token_type": "bearer",
+            "expires_at": expires_at
+        }
+}
 
     def _create_token(self, data: dict, expires_delta: timedelta):
         to_encode = data.copy()
