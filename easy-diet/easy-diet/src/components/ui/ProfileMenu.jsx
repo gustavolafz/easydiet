@@ -33,10 +33,10 @@ export default function ProfileMenu() {
             {/* Botões */}
             <div className="flex flex-col items-center w-full max-w-sm space-y-5">
                 {[
-                    { href: '/account-settings', label: 'Configurações', icon: <GearIcon className="w-5 h-5 mr-2" /> },
-                    { href: '/help', label: 'Ajuda', icon: <QuestionMarkCircledIcon className="w-5 h-5 mr-2" /> },
-                    { href: '/feedback', label: 'Feedbacks', icon: <ChatBubbleIcon className="w-5 h-5 mr-2" /> },
-                    { href: '/about-us', label: 'Quem Somos', icon: <InfoCircledIcon className="w-5 h-5 mr-2" /> },
+                    { href: '/app/account-settings', label: 'Configurações', icon: <GearIcon className="w-5 h-5 mr-2" /> },
+                    { href: '/app/help', label: 'Ajuda', icon: <QuestionMarkCircledIcon className="w-5 h-5 mr-2" /> },
+                    { href: '/app/feedback', label: 'Feedbacks', icon: <ChatBubbleIcon className="w-5 h-5 mr-2" /> },
+                    { href: '/app/about-us', label: 'Quem Somos', icon: <InfoCircledIcon className="w-5 h-5 mr-2" /> },
                 ].map((item, index) => (
                     <motion.div
                         key={index}
