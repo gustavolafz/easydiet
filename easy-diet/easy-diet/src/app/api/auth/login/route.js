@@ -23,20 +23,33 @@ export async function POST(request) {
 
     const data = await response.json();
 
-    console.log("Dados recebidos:", data); // Verifique se o expires_at está chegando corretamente
+    const { access_token, expires_at } = data.token;
+    const { first_name, email: userEmail } = data.user;
 
-    // Verificação se a data de expiração é válida
-    const expiresAt = data.expires_at;
-    const expiresDate = new Date(expiresAt); // Garantir que o formato esteja correto
+    const expiresDate = new Date(expires_at);
     if (isNaN(expiresDate)) {
-      throw new Error(`Data de expiração inválida: ${expiresAt}`);
+      throw new Error(`Data de expiração inválida: ${expires_at}`);
     }
 
     const headers = new Headers();
+
+    // Token seguro (HttpOnly)
     headers.append(
       'Set-Cookie',
-      serialize('access_token', data.access_token, {
+      serialize('access_token', access_token, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        expires: expiresDate,
+      })
+    );
+
+    // Info do usuário (legível no server)
+    headers.append(
+      'Set-Cookie',
+      serialize('user_info', JSON.stringify({ first_name, email: userEmail }), {
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',

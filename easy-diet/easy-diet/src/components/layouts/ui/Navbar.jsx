@@ -38,11 +38,11 @@ const Navbar = () => {
         <nav className="flex flex-row justify-center items-center bg-green-600 p-2 fixed bottom-0 w-full h-16">
             <ul className="flex justify-around w-full">
                 {[ 
-                    { id: '/dashboard', Icon: DashboardIcon, title: 'Dashboard' },
-                    { id: '/daily', Icon: HamburgerMenuIcon, title: 'Daily' },
-                    { id: '/easydiet', Icon: HeartIcon, title: 'EasyDiet' },
-                    { id: '/calendar', Icon: CalendarIcon, title: 'Calendar' },
-                    { id: '/more', Icon: DotsHorizontalIcon, title: 'More' },  // Usando DotsHorizontalIcon
+                    { id: '/app/dashboard', Icon: DashboardIcon, title: 'Dashboard' },
+                    { id: '/app/daily', Icon: HamburgerMenuIcon, title: 'Daily' },
+                    { id: '/app/easydiet', Icon: HeartIcon, title: 'EasyDiet' },
+                    { id: '/app/calendar', Icon: CalendarIcon, title: 'Calendar' },
+                    { id: '/app/more', Icon: DotsHorizontalIcon, title: 'More' },  // Usando DotsHorizontalIcon
                 ].map(({ id, Icon, title }) => (
                     <motion.li
                         key={id}
