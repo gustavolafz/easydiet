@@ -9,6 +9,9 @@ class RecipeService:
         self.food_service = FoodService()
 
     def calculate_total_nutrients(self, ingredients):
+        def safe_multiply(value, factor):
+            return (value or 0) * factor
+
         total = {
             "calories": 0.0,
             "carbohydrate": 0.0,
@@ -19,19 +22,25 @@ class RecipeService:
 
         for item in ingredients:
             food = self.db.foods.find_one({"_id": ObjectId(item["food_id"])})
-            if not food:
+            if not food or not food.get("serving_sizes"):
                 continue
 
-            serving = food["serving_sizes"][0]  # assume primeira porção
-            factor = item["quantity"] / serving["metric_serving_amount"]
+            serving = food["serving_sizes"][0]
 
-            total["calories"] += serving["calories"] * factor
-            total["carbohydrate"] += serving["carbohydrate"] * factor
-            total["protein"] += serving["protein"] * factor
-            total["fat"] += serving["fat"] * factor
-            total["fiber"] += serving["fiber"] * factor
+            metric_amount = serving.get("metric_serving_amount") or 100
+            try:
+                factor = item["quantity"] / metric_amount
+            except ZeroDivisionError:
+                factor = 0
+
+            total["calories"] += safe_multiply(serving.get("calories"), factor)
+            total["carbohydrate"] += safe_multiply(serving.get("carbohydrate"), factor)
+            total["protein"] += safe_multiply(serving.get("protein"), factor)
+            total["fat"] += safe_multiply(serving.get("fat"), factor)
+            total["fiber"] += safe_multiply(serving.get("fiber"), factor)
 
         return {k: round(v, 2) for k, v in total.items()}
+
     
     def get_recipes_by_user(self, user_id):
         try:
