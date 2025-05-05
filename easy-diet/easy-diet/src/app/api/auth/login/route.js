@@ -24,7 +24,7 @@ export async function POST(request) {
     const data = await response.json();
 
     const { access_token, expires_at } = data.token;
-    const { first_name, email: userEmail } = data.user;
+    const { ...safeUserInfo } = data.user;
 
     const expiresDate = new Date(expires_at);
     if (isNaN(expiresDate)) {
@@ -45,10 +45,11 @@ export async function POST(request) {
       })
     );
 
+    
     // Info do usuário (legível no server)
     headers.append(
       'Set-Cookie',
-      serialize('user_info', JSON.stringify({ first_name, email: userEmail }), {
+      serialize('user_info', JSON.stringify(safeUserInfo), {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
