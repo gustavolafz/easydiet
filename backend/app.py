@@ -9,6 +9,7 @@ from server.core.config import Config
 from server.api.endpoints.auth import auth_bp
 from server.api.endpoints.user import user_bp
 from server.api.endpoints.food import food_bp
+from server.api.endpoints.recipe import recipe_bp
 from server.core.error_handlers import register_error_handlers
 
 def create_app() -> Flask:
@@ -22,6 +23,7 @@ def create_app() -> Flask:
 
     # Registra rotas da aplicação usando Blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(recipe_bp, url_prefix='/recipe')
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(food_bp, url_prefix='/food')
 
