@@ -13,7 +13,7 @@ import {
 export default function ProfileMenu() {
     return (
         <motion.section
-            className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-white to-green-100 flex flex-col items-center justify-center px-6"
+            className="w-full flex flex-col items-center justify-center px-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}

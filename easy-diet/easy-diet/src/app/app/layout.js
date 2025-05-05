@@ -36,7 +36,7 @@ export default async function PrivateLayout({ children }) {
       <TopBar userName={user.first_name} /> {/* Passa o nome do usuário para a TopBar */}
       <div className="flex flex-1">
         <Navbar /> {/* Barra lateral */}
-        <main className="flex-1 p-4 bg-gray-50">
+        <main className="flex-1 bg-gray-50">
           {children} {/* Renderiza o conteúdo filho */}
         </main>
       </div>

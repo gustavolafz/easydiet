@@ -15,7 +15,7 @@ export default function Profile() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
             {/* Usando o SkeletonLoader enquanto o conteúdo está carregando */}
             <SkeletonLoader loading={loading} variant="rectangular" width="100%" height="100%">
                 <ProfileMenu /> {/* Seu componente real */}
