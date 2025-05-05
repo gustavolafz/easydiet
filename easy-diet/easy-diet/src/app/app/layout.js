@@ -6,8 +6,8 @@ import TopBar from "@/components/layouts/ui/Topbar";
 import { cookies } from 'next/headers';
 
 export async function getUserInfo() {
-  const cookieStore = cookies();
-  const raw = await cookieStore.get('user_info'); // Acessa o cookie
+  const cookieStore = await cookies();
+  const raw = cookieStore.get('user_info'); // Acessa o cookie
 
   if (!raw?.value) return null; // Verifica se há um cookie
 
