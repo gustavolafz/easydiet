@@ -8,6 +8,7 @@ from server.api.external_api.fatsecret import search_food
 from server.core.validation_middleware import validate_json
 from server.services.food import FoodService
 from datetime import datetime 
+import difflib
 
 food_bp = Blueprint("food", __name__)
 food_service = FoodService()
@@ -19,7 +20,7 @@ def get_or_search_food():
         return jsonify({"error": "Query param 'nome' is required"}), 400
 
     try:
-        # 1. Busca por nome semelhante (começa com)
+        # 1. Busca local por nome semelhante
         existing_food = food_service.collection.find_one({
             "name": {"$regex": f"^{food_name}", "$options": "i"}
         })
@@ -33,23 +34,30 @@ def get_or_search_food():
         if not food_raw_list:
             return jsonify({"error": "Food not found in FatSecret"}), 404
 
-        food_raw = food_raw_list[0]
-        fatsecret_id = food_raw["food_id"]
+        # 3. Encontra o alimento com nome mais semelhante
+        def similarity(a, b):
+            return difflib.SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
-        # 3. Verifica se esse fatsecret_id já está no banco
+        best_match = max(food_raw_list, key=lambda f: similarity(food_name, f["food_name"]))
+        if similarity(food_name, best_match["food_name"]) < 0.6:
+            return jsonify({"error": "Nenhum alimento suficientemente compatível encontrado"}), 404
+
+        fatsecret_id = best_match["food_id"]
+
+        # 4. Verifica se esse fatsecret_id já está no banco
         existing_by_id = food_service.collection.find_one({"fatsecret_id": fatsecret_id})
         if existing_by_id:
             existing_by_id["_id"] = str(existing_by_id["_id"])
             return jsonify(existing_by_id)
 
-        # 4. Formata e salva
-        serving = food_service.parse_food_description(food_raw["food_description"])
+        # 5. Formata e salva
+        serving = food_service.parse_food_description(best_match["food_description"])
         food_doc = {
             "fatsecret_id": fatsecret_id,
-            "name": food_raw["food_name"],
-            "brand": "Generic" if food_raw.get("food_type") == "Generic" else "Unknown",
+            "name": best_match["food_name"],
+            "brand": "Generic" if best_match.get("food_type") == "Generic" else "Unknown",
             "serving_sizes": [serving],
-            "category": food_raw.get("food_type", "Generic"),
+            "category": best_match.get("food_type", "Generic"),
             "last_updated": datetime.utcnow()
         }
 
@@ -59,7 +67,6 @@ def get_or_search_food():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
     
 
