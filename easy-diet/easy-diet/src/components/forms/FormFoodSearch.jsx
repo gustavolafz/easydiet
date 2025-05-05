@@ -89,11 +89,9 @@ const FormFoodSearch = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.3 }}
-                            className="border rounded-xl p-4 shadow-md bg-white"
+                            className="border rounded-xl p-4 shadow-md bg-white mx-4"
                         >
                             <h3 className="text-lg font-semibold">{item.name}</h3>
-                            <p className="text-sm text-gray-600">Marca: {item.brand}</p>
-                            <p className="text-sm text-gray-600">Categoria: {item.category}</p>
 
                             {item.serving_sizes?.[0] && (
                                 <div className="mt-2 text-sm text-gray-700">
