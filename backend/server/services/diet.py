@@ -65,7 +65,7 @@ class DietService:
     def get_diets_by_user_id(self, user_id: str):
         diets = list(self.diet_collection.find({"user_id": ObjectId(user_id)}))
         if not diets:
-            raise ValueError(f"Nenhuma dieta encontrada para o usuário {user_id}")
+            return []
         
         for diet in diets:
             diet["_id"] = str(diet["_id"])
