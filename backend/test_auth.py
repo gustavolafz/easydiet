@@ -31,3 +31,16 @@ def test_register_user(mock_register, mock_init, client):
     assert response.status_code == 201
     assert response.get_json() == {"message": "Usuário criado com sucesso"}
 
+@patch("server.api.endpoints.auth.AuthService.__init__", return_value=None)  # deve retornar None!
+@patch("server.api.endpoints.auth.AuthService.login")
+def test_login_user(mock_register, mock_init, client):
+    mock_register.return_value = {"user_id": "mocked_id"}
+
+    user_data = {
+        "email": "teste@al.insper.edu.br",
+        "password": "tfhSalIe"
+    }
+
+    response = client.post("/auth/login", json=user_data)
+
+    assert response.status_code == 200
