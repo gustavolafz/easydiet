@@ -71,7 +71,7 @@ export default function More() {
       icon: <EnvelopeClosedIcon className="w-5 h-5 text-teal-500" />,
       title: 'Contato',
       description: 'Entre em contato com nosso suporte',
-      action: () => window.location.href = 'mailto:suporte@easydiet.com'
+      action: () => window.location.href = 'projetoeasydiet@gmail.com'
     }
   ];
 
@@ -130,7 +130,7 @@ export default function More() {
       
       <div className="text-center text-gray-400 text-xs">
         <p>EasyDiet v1.0.0</p>
-        <p className="mt-1">© 2023 EasyDiet - Todos os direitos reservados</p>
+        <p className="mt-1">© 2025 EasyDiet - Todos os direitos reservados</p>
       </div>
     </div>
   );

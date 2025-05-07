@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PlusIcon, Cross2Icon, Pencil1Icon, TrashIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import { Search } from 'lucide-react';
 
 export default function EasyDiet() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -11,7 +12,7 @@ export default function EasyDiet() {
   const [dietaParaExcluir, setDietaParaExcluir] = useState(null);
   const [modoDieta, setModoDieta] = useState('lista'); // 'lista', 'detalhes'
   const [dietaSelecionada, setDietaSelecionada] = useState(null);
-  
+
   // Form state
   const [formDieta, setFormDieta] = useState({
     nome: '',
@@ -19,9 +20,91 @@ export default function EasyDiet() {
     objetivo: '',
     restricoes: [],
     duracaoSemanas: 4,
-    calorias: 1800
+    calorias: 1800,
+    refeicoes: [
+      { id: 1, tipo: 'Café da manhã', alimentos: [] },
+      { id: 2, tipo: 'Lanche da manhã', alimentos: [] },
+      { id: 3, tipo: 'Almoço', alimentos: [] },
+      { id: 4, tipo: 'Lanche da tarde', alimentos: [] },
+      { id: 5, tipo: 'Jantar', alimentos: [] },
+    ],
   });
-  
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedFood, setSelectedFood] = useState(null);
+  const [quantity, setQuantity] = useState('');
+  const [unit, setUnit] = useState('g');
+
+  const handleSearchFood = async () => {
+    if (!searchTerm.trim()) return;
+    try {
+      const res = await fetch(`/api/food/search?nome=${encodeURIComponent(searchTerm)}`);
+      const data = await res.json();
+      setSearchResults(Array.isArray(data) ? data : [data]);
+    } catch (err) {
+      console.error('Erro ao buscar alimento:', err);
+    }
+  };
+
+  const addFoodToMeal = (mealId) => {
+    if (!selectedFood) return;
+
+    const updatedRefeicoes = formDieta.refeicoes.map((refeicao) => {
+      if (refeicao.id === mealId) {
+        return {
+          ...refeicao,
+          alimentos: [
+            ...refeicao.alimentos,
+            {
+              id: Date.now(),
+              nome: selectedFood.name,
+              quantidade: '',
+              unidade: 'g',
+            },
+          ],
+        };
+      }
+      return refeicao;
+    });
+
+    setFormDieta({ ...formDieta, refeicoes: updatedRefeicoes });
+    setSelectedFood(null);
+    setSearchResults([]);
+  };
+
+  const handleQuantityChange = (mealId, index, value) => {
+    const updatedRefeicoes = formDieta.refeicoes.map((refeicao) => {
+      if (refeicao.id === mealId) {
+        const updatedAlimentos = refeicao.alimentos.map((alimento, i) => {
+          if (i === index) {
+            return { ...alimento, quantidade: value };
+          }
+          return alimento;
+        });
+        return { ...refeicao, alimentos: updatedAlimentos };
+      }
+      return refeicao;
+    });
+    setFormDieta({ ...formDieta, refeicoes: updatedRefeicoes });
+  };
+
+  const handleUnitChange = (mealId, index, value) => {
+    const updatedRefeicoes = formDieta.refeicoes.map((refeicao) => {
+      if (refeicao.id === mealId) {
+        const updatedAlimentos = refeicao.alimentos.map((alimento, i) => {
+          if (i === index) {
+            return { ...alimento, unidade: value };
+          }
+          return alimento;
+        });
+        return { ...refeicao, alimentos: updatedAlimentos };
+      }
+      return refeicao;
+    });
+    setFormDieta({ ...formDieta, refeicoes: updatedRefeicoes });
+  };
+
   // Dados de exemplo para dietas
   const [dietas, setDietas] = useState([
     {
@@ -74,7 +157,8 @@ export default function EasyDiet() {
         objetivo: dieta.objetivo,
         restricoes: [...dieta.restricoes],
         duracaoSemanas: dieta.duracaoSemanas,
-        calorias: dieta.calorias
+        calorias: dieta.calorias,
+        refeicoes: dieta.refeicoes
       });
     } else {
       setDietaEmEdicao(null);
@@ -84,7 +168,14 @@ export default function EasyDiet() {
         objetivo: '',
         restricoes: [],
         duracaoSemanas: 4,
-        calorias: 1800
+        calorias: 1800,
+        refeicoes: [
+          { id: 1, tipo: 'Café da manhã', alimentos: [] },
+          { id: 2, tipo: 'Lanche da manhã', alimentos: [] },
+          { id: 3, tipo: 'Almoço', alimentos: [] },
+          { id: 4, tipo: 'Lanche da tarde', alimentos: [] },
+          { id: 5, tipo: 'Jantar', alimentos: [] }
+        ]
       });
     }
     
@@ -123,12 +214,11 @@ export default function EasyDiet() {
 
   // Salvar nova dieta ou editar existente
   const salvarDieta = () => {
-    // Simular chamada à API para salvar dieta
     // const salvarDietaApi = async () => {
     //   try {
     //     const method = dietaEmEdicao ? 'PUT' : 'POST';
-    //     const url = dietaEmEdicao ? `/api/dietas/${dietaEmEdicao.id}` : '/api/dietas';
-    //     
+    //     const url = dietaEmEdicao ? `/api/dietas/${dietaEmEdicao.id}` : '/api/user/diet';
+        
     //     const response = await fetch(url, {
     //       method,
     //       headers: {
@@ -136,16 +226,16 @@ export default function EasyDiet() {
     //       },
     //       body: JSON.stringify(formDieta),
     //     });
-    //     
+        
     //     if (response.ok) {
     //       const resultado = await response.json();
-    //       
+          
     //       if (dietaEmEdicao) {
     //         setDietas(dietas.map(d => d.id === dietaEmEdicao.id ? resultado : d));
     //       } else {
     //         setDietas([...dietas, resultado]);
     //       }
-    //       
+          
     //       fecharModal();
     //     } else {
     //       throw new Error('Falha ao salvar dieta');
@@ -154,7 +244,7 @@ export default function EasyDiet() {
     //     console.error('Erro ao salvar dieta:', error);
     //   }
     // };
-    //
+    
     // salvarDietaApi();
     
     // Simulação
@@ -605,6 +695,76 @@ export default function EasyDiet() {
                     ))}
                   </div>
                 </div>
+
+                <div className="flex gap-2 mb-4">
+                  <input
+                    type="text"
+                    placeholder="Buscar alimento..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="flex-1 border border-gray-300 p-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                  />
+                  <button
+                    onClick={handleSearchFood}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-xl transition"
+                  >
+                    <Search size={16} />
+                  </button>
+                </div>
+
+                {searchResults.length > 0 && (
+                  <ul className="border rounded-xl p-2 max-h-32 overflow-y-auto bg-gray-50 shadow-inner">
+                    {searchResults.map((food) => (
+                      <li
+                        key={food._id}
+                        className="cursor-pointer hover:bg-green-100 p-1 rounded transition"
+                        onClick={() => setSelectedFood(food)}
+                      >
+                        {food.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* Refeições */}
+                {formDieta.refeicoes.map((refeicao) => (
+                  <div key={refeicao.id} className="mt-4">
+                    <h3 className="font-semibold text-gray-700 mb-2">{refeicao.tipo}</h3>
+
+                    {refeicao.alimentos.map((alimento, index) => (
+                      <div key={index} className="flex items-center gap-2 mt-2">
+                        <span className="text-sm font-semibold text-gray-800">
+                          {alimento.nome}
+                        </span>
+                        <input
+                          type="number"
+                          placeholder="Qtd"
+                          className="w-20 border border-gray-300 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                          value={alimento.quantidade}
+                          onChange={(e) => handleQuantityChange(refeicao.id, index, e.target.value)}
+                        />
+                        <select
+                          className="border border-gray-300 p-1 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                          value={alimento.unidade}
+                          onChange={(e) => handleUnitChange(refeicao.id, index, e.target.value)}
+                        >
+                          <option value="g">g</option>
+                          <option value="ml">ml</option>
+                          <option value="un">un</option>
+                        </select>
+                      </div>
+                    ))}
+
+                    {selectedFood && (
+                      <button
+                        onClick={() => addFoodToMeal(refeicao.id)}
+                        className="text-green-600 hover:text-green-800 transition mt-2"
+                      >
+                        Adicionar {selectedFood.name}
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
             
@@ -662,4 +822,4 @@ export default function EasyDiet() {
       )}
     </div>
   );
-} 
+}

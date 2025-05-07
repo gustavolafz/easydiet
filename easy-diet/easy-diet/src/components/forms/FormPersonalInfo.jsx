@@ -11,6 +11,8 @@ const FormPersonalInfo = ({ baseData }) => {
     gender: "",
     activity_level: "",
     goal: "",
+    dietary_preference: "",
+    dietary_restriction: [""],
   });
 
   const handleChange = (e) => {
@@ -32,7 +34,6 @@ const FormPersonalInfo = ({ baseData }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Erro ao registrar");
 
-      // auto-login após cadastro
       const loginRes = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -51,6 +52,26 @@ const FormPersonalInfo = ({ baseData }) => {
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const handleRestrictionChange = (index, value) => {
+    const updated = [...personalData.dietary_restriction];
+    updated[index] = value;
+    setPersonalData({ ...personalData, dietary_restriction: updated });
+  };
+
+  const addRestriction = () => {
+    setPersonalData({
+      ...personalData,
+      dietary_restriction: [...personalData.dietary_restriction, ""],
+    });
+  };
+
+  const removeRestriction = (index) => {
+    const updated = personalData.dietary_restriction.filter(
+      (_, i) => i !== index
+    );
+    setPersonalData({ ...personalData, dietary_restriction: updated });
   };
 
   return (
@@ -107,7 +128,7 @@ const FormPersonalInfo = ({ baseData }) => {
             ]}
           />
           <Select
-            label="Atividade Física"
+            label="Nível de Atividade Física"
             name="activity_level"
             value={personalData.activity_level}
             onChange={handleChange}
@@ -118,12 +139,68 @@ const FormPersonalInfo = ({ baseData }) => {
               { value: "high", label: "Alto" },
             ]}
           />
-          <Input
+          <Select
             label="Objetivo"
             name="goal"
             value={personalData.goal}
             onChange={handleChange}
+            options={[
+              { value: "", label: "Selecione" },
+              { value: "perda de peso", label: "Perda de peso" },
+              { value: "ganho de massa", label: "Ganho de massa" },
+              { value: "manutenção", label: "Manutenção" },
+              { value: "melhorar saúde", label: "Melhorar saúde" },
+            ]}
           />
+          <Select
+            label="Preferência Alimentar"
+            name="dietary_preference"
+            value={personalData.dietary_preference}
+            onChange={handleChange}
+            options={[
+              { value: "", label: "Selecione" },
+              { value: "vegetariana", label: "Vegetariana" },
+              { value: "vegana", label: "Vegana" },
+              { value: "onívora", label: "Onívora" },
+              { value: "low carb", label: "Low Carb" },
+              { value: "mediterrânea", label: "Mediterrânea" },
+              { value: "outro", label: "Outro" },
+            ]}
+          />
+          <div>
+            <label className="block text-base font-medium text-gray-700">
+              Restrições Alimentares:
+            </label>
+            {personalData.dietary_restriction.map((restriction, index) => (
+              <div key={index} className="flex items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  value={restriction}
+                  onChange={(e) =>
+                    handleRestrictionChange(index, e.target.value)
+                  }
+                  className="input-style flex-1"
+                  placeholder="Ex: lactose, glúten..."
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => removeRestriction(index)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  Remover
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addRestriction}
+              className="text-green-600 hover:text-green-800 text-sm mt-1"
+            >
+              + Adicionar outra restrição
+            </button>
+          </div>
+
           <motion.button type="submit" className="btn-green">
             Finalizar Cadastro
           </motion.button>
