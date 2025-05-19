@@ -48,7 +48,7 @@ const FormPersonalInfo = ({ baseData }) => {
         throw new Error(loginData.message || "Erro ao fazer login");
 
       alert("Cadastro realizado com sucesso!");
-      window.location.href = "/dashboard";
+      window.location.href = "/app/profile";
     } catch (err) {
       alert(err.message);
     }

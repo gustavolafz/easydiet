@@ -1,30 +1,24 @@
-import EasyDiet from "@/components/pages/Easydiet";
+import EasyDiet from '@/components/pages/Easydiet';
 import { cookies } from 'next/headers';
 import React from 'react';
 
 export default async function EasyDietPage() {
+    const cookieStore = cookies(); 
+    const raw = cookieStore.get('user_info');
 
-    async function getUserInfo() {
-        const cookieStore = await cookies();
-        const raw = cookieStore.get('user_info'); // Acessa o cookie
-      
-        if (!raw?.value) return null; // Verifica se há um cookie
-      
+    let user = null;
+
+    if (raw?.value) {
         try {
-          return JSON.parse(decodeURIComponent(raw.value)); // Retorna o cookie decodificado
+            user = JSON.parse(decodeURIComponent(raw.value));
         } catch (err) {
-          console.error('Erro ao parsear user_info:', err);
-          return null; // Caso haja erro na conversão
+            console.error('Erro ao parsear user_info:', err);
         }
     }
-      
-    let user
-
-    user = await getUserInfo();
 
     return (
         <div>
-            <EasyDiet user={user}/>
+            <EasyDiet />
         </div>
     );
 }
