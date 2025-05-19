@@ -17,6 +17,8 @@ class UserModel(BaseModel):
     goal: str
     height: str
     weight: str
+    dietary_preference: str
+    dietary_restriction: list
     created_at: datetime = Field(default_factory=lambda: datetime.utcnow().replace(tzinfo=pytz.utc))
 
     class Config:

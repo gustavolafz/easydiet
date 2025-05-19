@@ -124,6 +124,10 @@ Ele também serve como base de aprendizado prático em Flask, APIs REST e arquit
 
 ---
 
+## DEPLOY
+
+IP: http://50.16.164.251/
+
 <!-- ## 🖋️ Autores
 
 - **Gustavo Lima**

@@ -3,10 +3,11 @@
 
 from flask import current_app
 from server.utils.bson_utils import PyObjectId as ObjectId
+from server.db.database import get_database
 
 class UserService:
     def __init__(self):
-        self.db = current_app.mongo
+        self.db = get_database()
 
     def get_user_by_id(self, user_id):
         try:
@@ -28,20 +29,23 @@ class UserService:
             raise ValueError("User not found")
         return user
 
+
+
     def update_user(self, user_id, update_data):
-        if update_data.keys() - {"username", "email"}:
-            raise ValueError("Invalid update data")
-        
-        if not self.db.users.find_one({"_id": ObjectId(user_id)}):
+        user_obj_id = ObjectId(user_id)
+
+        if not self.db.users.find_one({"_id": user_obj_id}):
             raise ValueError("User not found")
 
+        print(update_data)
         result = self.db.users.update_one(
-            {"_id": user_id},
-            {"$set": update_data}
+            {"_id": user_obj_id},         
+            {"$set": update_data}         
         )
 
         if result.modified_count == 0:
             raise ValueError("No modifications were made")
+
 
         return {"message": "user updated successfully"}
 

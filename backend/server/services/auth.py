@@ -41,6 +41,8 @@ class AuthService:
             goal=user_data["goal"],
             height=user_data["height"],
             weight=user_data["weight"],
+            dietary_preference=user_data["dietary_preference"],
+            dietary_restriction=user_data["dietary_restriction"]
         )
 
         # Remove o campo 'id' para não sobrescrever o _id do MongoDB
@@ -83,6 +85,13 @@ class AuthService:
             "expires_at": expires_at
         }
 }
+
+    def logout(self, user_id: str):
+        # Remove o token do banco de dados para efetuar o logout
+        result = self.db.tokens.delete_one({"user_id": user_id})
+        if result.deleted_count == 0:
+            raise ValueError("User not found or already logged out")
+        return {"message": "Successfully logged out"}
 
     def _create_token(self, data: dict, expires_delta: timedelta):
         to_encode = data.copy()

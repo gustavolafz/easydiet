@@ -24,6 +24,14 @@ def login_user(data: UserLoginSchema):
     payload = auth_service.login(data.model_dump())
     return jsonify(payload), 200
 
+@auth_bp.route('/logout', methods=['POST'])
+def logout(data):
+    current_app.logger.info('Login endpoint called')
+    body = data.model_dump()
+    auth_service = AuthService()
+    payload = auth_service.logout(body.user_id)
+    return jsonify(payload), 200
+
 @auth_bp.route('/verify', methods=["POST"])
 def verify_user():
     data = request.get_json()
