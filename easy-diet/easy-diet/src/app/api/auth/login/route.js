@@ -24,7 +24,24 @@ export async function POST(request) {
     const data = await response.json();
 
     const { access_token, expires_at } = data.token;
-    const { ...safeUserInfo } = data.user;
+
+    function fixDietaryRestriction(value) {
+      if (typeof value === 'string') {
+        try {
+          // Converte string tipo "['lactose', 'glúten']" em array real
+          return JSON.parse(value.replace(/'/g, '"'));
+        } catch (e) {
+          return []; // Se der erro no parse, retorna array vazio
+        }
+      }
+      return value;
+    }
+    
+    // Monta o safeUserInfo corretamente
+    const safeUserInfo = {
+      ...data.user,
+      dietary_restriction: fixDietaryRestriction(data.user.dietary_restriction),
+    };
 
     const expiresDate = new Date(expires_at);
     if (isNaN(expiresDate)) {

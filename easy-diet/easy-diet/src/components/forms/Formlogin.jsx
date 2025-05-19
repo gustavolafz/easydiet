@@ -53,12 +53,10 @@ const FormLogin = () => {
 
       const data = await response.json();
 
-      console.log(data);
-
       if (!response.ok) throw new Error(data.message || "Erro no login");
 
       alert("Login realizado com sucesso!");
-      window.location.href = "/dashboard";
+      window.location.href = "/app/dashboard";
     } catch (err) {
       alert(err.message);
     }
