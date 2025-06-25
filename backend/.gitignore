@@ -1,0 +1,44 @@
+.env
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+env/
+venv/
+ENV/
+.venv/
+.env
+
+# Flask instance folder
+instance/
+
+# SQLite database
+*.sqlite3
+*.db
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# MacOS
+.DS_Store
+
+# Pipenv
+Pipfile.lock
+
+# Migrations (se quiser ignorar arquivos gerados, tipo do Flask-Migrate)
+migrations/

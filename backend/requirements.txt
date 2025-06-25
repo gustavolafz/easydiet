@@ -1,0 +1,12 @@
+Flask
+flask_cors
+bcrypt
+pytz
+requests
+python-dotenv
+pymongo
+dnspython
+pydantic
+python-jose
+pydantic[email]
+passlib
