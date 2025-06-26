@@ -1,17 +1,19 @@
-# server/api/endpoints/food.py
-# Description: This file contains the endpoint for searching food items using the FatSecret API.
+# api/endpoints/food_endpoints.py
+
+import difflib
+from datetime import datetime
 
 import requests
-from flask import Blueprint, request, jsonify
-from server.schemas.food import CreateFoodShema
+from flask import Blueprint, jsonify, request
+
 from server.api.external_api.fatsecret import search_food
 from server.core.validation_middleware import validate_json
-from server.services.food import FoodService
-from datetime import datetime 
-import difflib
+from server.schemas import CreateFoodShema
+from server.services import FoodService
 
 food_bp = Blueprint("food", __name__)
 food_service = FoodService()
+
 
 @food_bp.route("/", methods=["GET"])
 def get_or_search_food():
@@ -21,9 +23,9 @@ def get_or_search_food():
 
     try:
         # 1. Busca local por nome semelhante
-        existing_food = food_service.collection.find_one({
-            "name": {"$regex": f"^{food_name}", "$options": "i"}
-        })
+        existing_food = food_service.collection.find_one(
+            {"name": {"$regex": f"^{food_name}", "$options": "i"}}
+        )
         if existing_food:
             existing_food["_id"] = str(existing_food["_id"])
             return jsonify(existing_food)
@@ -38,14 +40,23 @@ def get_or_search_food():
         def similarity(a, b):
             return difflib.SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
-        best_match = max(food_raw_list, key=lambda f: similarity(food_name, f["food_name"]))
+        best_match = max(
+            food_raw_list, key=lambda f: similarity(food_name, f["food_name"])
+        )
         if similarity(food_name, best_match["food_name"]) < 0.6:
-            return jsonify({"error": "Nenhum alimento suficientemente compatível encontrado"}), 404
+            return (
+                jsonify(
+                    {"error": "Nenhum alimento suficientemente compatível encontrado"}
+                ),
+                404,
+            )
 
         fatsecret_id = best_match["food_id"]
 
         # 4. Verifica se esse fatsecret_id já está no banco
-        existing_by_id = food_service.collection.find_one({"fatsecret_id": fatsecret_id})
+        existing_by_id = food_service.collection.find_one(
+            {"fatsecret_id": fatsecret_id}
+        )
         if existing_by_id:
             existing_by_id["_id"] = str(existing_by_id["_id"])
             return jsonify(existing_by_id)
@@ -55,10 +66,12 @@ def get_or_search_food():
         food_doc = {
             "fatsecret_id": fatsecret_id,
             "name": best_match["food_name"],
-            "brand": "Generic" if best_match.get("food_type") == "Generic" else "Unknown",
+            "brand": (
+                "Generic" if best_match.get("food_type") == "Generic" else "Unknown"
+            ),
             "serving_sizes": [serving],
             "category": best_match.get("food_type", "Generic"),
-            "last_updated": datetime.utcnow()
+            "last_updated": datetime.utcnow(),
         }
 
         inserted = food_service.collection.insert_one(food_doc)
@@ -68,7 +81,6 @@ def get_or_search_food():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-    
 
 @food_bp.route("/", methods=["POST"])
 @validate_json(CreateFoodShema)
@@ -83,7 +95,7 @@ def create_food_endpoint(data: CreateFoodShema):
             "brand": data.brand or None,
             "serving_sizes": [serving],
             "category": data.type,  # Ou data.category, dependendo do uso
-            "last_updated": datetime.utcnow()
+            "last_updated": datetime.utcnow(),
         }
 
         new_id = food_service.collection.insert_one(food_doc).inserted_id

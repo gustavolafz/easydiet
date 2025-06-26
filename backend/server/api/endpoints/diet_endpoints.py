@@ -1,11 +1,15 @@
-from flask import Blueprint, request, jsonify
-from server.services.diet import DietService
-from server.schemas.diet import CreateDietSchema
+# api/endpoints/diet_endpoints.py
+
+from flask import Blueprint, jsonify, request
+
 from server.core.validation_middleware import validate_json
+from server.schemas import CreateDietSchema
+from server.services import DietService
 from server.utils.json_encoder import bson_to_json
 
 diet_bp = Blueprint("diet", __name__)
 diet_service = DietService()
+
 
 @diet_bp.route("/", methods=["POST"])
 @validate_json(CreateDietSchema)
@@ -18,6 +22,7 @@ def create_diet_endpoint(data: CreateDietSchema):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @diet_bp.route("/<diet_id>", methods=["GET"])
 def get_diet(diet_id):
     try:
@@ -29,6 +34,7 @@ def get_diet(diet_id):
             return jsonify({"error": "Dieta não encontrada"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @diet_bp.route("/", methods=["GET"])
 def get_diets_by_user_id():
@@ -43,6 +49,7 @@ def get_diets_by_user_id():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @diet_bp.route("/<diet_id>", methods=["PUT"])
 def update_diet(diet_id):
     data = request.get_json()
@@ -52,6 +59,7 @@ def update_diet(diet_id):
         return jsonify(updated_diet), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @diet_bp.route("/<diet_id>", methods=["DELETE"])
 def delete_diet(diet_id):

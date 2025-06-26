@@ -1,6 +1,8 @@
-from flask import request, jsonify, g
+from flask import g, jsonify, request
 from jose import JWTError, jwt
+
 from server.core.config import Config
+
 
 def jwt_middleware():
     token = request.headers.get("Authorization")

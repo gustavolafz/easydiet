@@ -1,12 +1,16 @@
-from flask import Blueprint, request, jsonify
-from server.services.recipe import RecipeService
-from server.schemas.recipe import CreateRecipe
-from server.core.validation_middleware import validate_json
-from server.utils.bson_utils import convert_objectid_to_str
+# api/endpoints/recipe_endpoints.py
+
 from bson import ObjectId
+from flask import Blueprint, jsonify, request
+
+from server.core.validation_middleware import validate_json
+from server.schemas import CreateRecipe
+from server.services import RecipeService
+from server.utils.bson_utils import convert_objectid_to_str
 
 recipe_bp = Blueprint("recipe", __name__)
 recipe_service = RecipeService()
+
 
 @recipe_bp.route("/<recipe_id>", methods=["GET"])
 def get_recipe(recipe_id):
@@ -19,12 +23,14 @@ def get_recipe(recipe_id):
         enriched_ingredients = []
         for item in recipe["ingredients"]:
             food = recipe_service.db.foods.find_one({"_id": item["food_id"]})
-            enriched_ingredients.append({
-                "food_id": str(item["food_id"]),
-                "food_name": food["name"] if food else "Desconhecido",
-                "quantity": item["quantity"],
-                "unit": item["unit"]
-            })
+            enriched_ingredients.append(
+                {
+                    "food_id": str(item["food_id"]),
+                    "food_name": food["name"] if food else "Desconhecido",
+                    "quantity": item["quantity"],
+                    "unit": item["unit"],
+                }
+            )
 
         recipe["ingredients"] = enriched_ingredients
         recipe["_id"] = str(recipe["_id"])
@@ -34,7 +40,8 @@ def get_recipe(recipe_id):
         return jsonify(recipe)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @recipe_bp.route("/", methods=["GET"])
 def get_recipes_by_user():
     user_id = request.args.get("user_id")
@@ -45,7 +52,8 @@ def get_recipes_by_user():
         return jsonify(recipes)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @recipe_bp.route("/<recipe_id>", methods=["PUT"])
 def update_recipe(recipe_id):
     try:
@@ -54,7 +62,8 @@ def update_recipe(recipe_id):
         return jsonify(updated_message), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @recipe_bp.route("/<recipe_id>", methods=["DELETE"])
 def delete_recipe(recipe_id):
     try:
@@ -62,6 +71,7 @@ def delete_recipe(recipe_id):
         return jsonify(delete_message), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @recipe_bp.route("/", methods=["POST"])
 @validate_json(CreateRecipe)
@@ -71,4 +81,3 @@ def create_recipe_endpoint(data: CreateRecipe):
         return jsonify({"message": "Recipe created", "id": inserted_id}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-

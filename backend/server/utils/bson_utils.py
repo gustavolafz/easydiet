@@ -1,8 +1,9 @@
-# server/utils/bson_utils.py
-# Description: Utility functions for handling BSON ObjectId in Pydantic models.
+# utils/bson_utils.py
+
+from datetime import datetime
 
 from bson import ObjectId
-from datetime import datetime
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -14,6 +15,7 @@ class PyObjectId(ObjectId):
         if not ObjectId.is_valid(v):
             raise ValueError("Invalid ObjectId")
         return str(v)
+
 
 def convert_objectid_to_str(document):
     """

@@ -1,7 +1,10 @@
+# services/food_service.py
+
 import re
 from datetime import datetime
-from server.utils.bson_utils import PyObjectId as ObjectId
+
 from server.db.database import get_database
+from server.utils.bson_utils import PyObjectId as ObjectId
 
 
 class FoodService:
@@ -13,7 +16,7 @@ class FoodService:
         """
         Recebe a string food_description e retorna um dicionário com os nutrientes extraídos.
         """
-        match = re.search(r'Per\s+(\d+)(\w+)', desc)
+        match = re.search(r"Per\s+(\d+)(\w+)", desc)
         amount = int(match.group(1)) if match else 100
         unit = match.group(2) if match else "g"
 
@@ -28,7 +31,7 @@ class FoodService:
             "fat": extract(r"Fat:\s*([\d.]+)g"),
             "carbohydrate": extract(r"Carbs:\s*([\d.]+)g"),
             "protein": extract(r"Protein:\s*([\d.]+)g"),
-            "fiber": extract(r"Fiber:\s*([\d.]+)g")
+            "fiber": extract(r"Fiber:\s*([\d.]+)g"),
         }
 
     def create_food(self, food_data: dict):
@@ -43,7 +46,7 @@ class FoodService:
             "brand": None,
             "serving_sizes": [serving],
             "category": food_data.get("food_type", "Unknown"),
-            "last_updated": datetime.utcnow()
+            "last_updated": datetime.utcnow(),
         }
 
         result = self.collection.insert_one(food_doc)

@@ -1,9 +1,14 @@
-from typing import Optional
+# models/users_model.py
+
 from datetime import datetime
+from typing import Optional
+
+import pytz
+from pydantic import BaseModel, EmailStr, Field
+
 from server.db.database import get_database
 from server.utils.bson_utils import PyObjectId
-from pydantic import BaseModel, Field, EmailStr
-import pytz
+
 
 class UserModel(BaseModel):
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
@@ -19,13 +24,16 @@ class UserModel(BaseModel):
     weight: str
     dietary_preference: str
     dietary_restriction: list
-    created_at: datetime = Field(default_factory=lambda: datetime.utcnow().replace(tzinfo=pytz.utc))
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.utcnow().replace(tzinfo=pytz.utc)
+    )
 
     class Config:
         allow_population_by_field_name = True
         json_encoders = {PyObjectId: str}
-        populate_by_name = True  # Isso ajuda a respeitar o alias na hora de criar o objeto
-
+        populate_by_name = (
+            True  # Isso ajuda a respeitar o alias na hora de criar o objeto
+        )
 
     @classmethod
     def get_by_email(cls, email: str):

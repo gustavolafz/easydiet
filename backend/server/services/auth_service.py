@@ -1,13 +1,15 @@
-# server/services/auth.py
-# Description: This file contains the authentication service for user registration and login.
+# services/auth_service.py
 
-from jose import jwt, JWTError
-from server.models.user import UserModel
 from datetime import datetime, timedelta
-from server.utils.bson_utils import PyObjectId as ObjectId
+
+from jose import JWTError, jwt
+
+from server.core.config import Config
 from server.core.security import hash_password, verify_password
 from server.db.database import get_database
-from server.core.config import Config
+from server.models import UserModel
+from server.utils.bson_utils import PyObjectId as ObjectId
+
 
 class AuthService:
     def __init__(self):
@@ -16,9 +18,7 @@ class AuthService:
         self.SECRET_KEY = Config.JWT_SECRET
 
     def _get_user_by_id(self, user_id: str):
-        return self.db.users.find_one({
-            "_id": ObjectId(user_id)
-        })
+        return self.db.users.find_one({"_id": ObjectId(user_id)})
 
     def register(self, user_data: dict):
         # Verifica se o email já está registrado
@@ -42,7 +42,7 @@ class AuthService:
             height=user_data["height"],
             weight=user_data["weight"],
             dietary_preference=user_data["dietary_preference"],
-            dietary_restriction=user_data["dietary_restriction"]
+            dietary_restriction=user_data["dietary_restriction"],
         )
 
         # Remove o campo 'id' para não sobrescrever o _id do MongoDB
@@ -51,13 +51,12 @@ class AuthService:
         # Retorna o id do usuário criado
         return {"user_id": str(result.inserted_id)}
 
-
     def login(self, user_data: dict):
         user = self.db.users.find_one({"email": user_data["email"]})
         if not user:
             raise ValueError("User not found")
 
-        if not verify_password(user_data['password'], user["password"]):
+        if not verify_password(user_data["password"], user["password"]):
             raise ValueError("Invalid password")
 
         token = self._create_token(
@@ -70,21 +69,18 @@ class AuthService:
         # salva ou atualiza o token no banco
         self.db.tokens.update_one(
             {"user_id": str(user["_id"])},
-            {"$set": {
-                "refresh_token": token,
-                "expires_at": expires_at
-            }},
-            upsert=True
+            {"$set": {"refresh_token": token, "expires_at": expires_at}},
+            upsert=True,
         )
 
         return {
-        "user": {k: str(v) for k, v in user.items() if k != "password"},
-        "token": {
-            "access_token": token,
-            "token_type": "bearer",
-            "expires_at": expires_at
+            "user": {k: str(v) for k, v in user.items() if k != "password"},
+            "token": {
+                "access_token": token,
+                "token_type": "bearer",
+                "expires_at": expires_at,
+            },
         }
-}
 
     def logout(self, user_id: str):
         # Remove o token do banco de dados para efetuar o logout
@@ -107,10 +103,9 @@ class AuthService:
                 raise ValueError("Invalid token")
 
             # checar se o token ainda está registrado no banco
-            token_record = self.db.tokens.find_one({
-                "user_id": user_id,
-                "refresh_token": token
-            })
+            token_record = self.db.tokens.find_one(
+                {"user_id": user_id, "refresh_token": token}
+            )
 
             if not token_record:
                 raise ValueError("Token not found or revoked")

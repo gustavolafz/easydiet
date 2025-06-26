@@ -1,7 +1,7 @@
-# server/core/config.py
-# Description: This file contains the configuration settings for the Flask application, including loading environment variables from a .env file.
+# core/config.py
 
 import os
+
 from dotenv import load_dotenv
 
 # Carrega variáveis de ambiente do arquivo .env
@@ -21,5 +21,6 @@ class Config:
     # # Validação das variáveis obrigatórias
     # if not DB_USER or not DB_PASSWORD or not DB_NAME:
     #     raise ValueError("As variáveis de ambiente DB_USER, DB_PASSWORD e DB_NAME são obrigatórias.")
+
 
 config = Config()

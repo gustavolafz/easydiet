@@ -1,9 +1,10 @@
-# server/core/validation_middleware.py
-# Description: This file contains the validation middleware for Flask API using Pydantic.
+# core/validation_middleware.py
 
-from functools import wraps 
-from flask import request, jsonify
+from functools import wraps
+
+from flask import jsonify, request
 from pydantic import ValidationError
+
 
 def validate_json(schema):
     def decorator(func):
@@ -12,7 +13,9 @@ def validate_json(schema):
             try:
                 data = schema(**request.json)
             except ValidationError as e:
-                return jsonify({'error': 'validation error', 'details': str(e)}), 400
+                return jsonify({"error": "validation error", "details": str(e)}), 400
             return func(data, *args, **kwargs)
-        return wrapper 
+
+        return wrapper
+
     return decorator

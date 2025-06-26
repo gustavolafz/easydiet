@@ -1,14 +1,15 @@
-# server/schemas/food.py
-# Description: This file contains the Pydantic schemas for food-related operations.
+# schemas/food_schemas.py
 
-from pydantic import BaseModel, Field 
-from typing import Optional 
+from typing import Optional
+
+from pydantic import BaseModel, Field
+
 
 class CreateFoodShema(BaseModel):
-    fatsecret_id : str
-    name : str
+    fatsecret_id: str
+    name: str
     category: str
-    url : str
-    type : str
-    brand : str
+    url: str
+    type: str
+    brand: str
     description: str
