@@ -29,7 +29,7 @@ class UserModel(BaseModel):
     )
 
     class Config:
-        allow_population_by_field_name = True
+        validate_by_name = True
         json_encoders = {PyObjectId: str}
         populate_by_name = (
             True  # Isso ajuda a respeitar o alias na hora de criar o objeto
