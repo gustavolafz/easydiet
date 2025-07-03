@@ -1,6 +1,5 @@
 # api/endpoints/diet_endpoints.py
 
-from typing import Any, Tuple
 
 from flask import Blueprint, Response, jsonify, request
 
@@ -15,7 +14,7 @@ diet_service = DietService()
 
 @diet_bp.route("/", methods=["POST"])
 @validate_json(CreateDietSchema)
-def create_diet_endpoint(data: CreateDietSchema) -> Tuple[Response, int]:
+def create_diet_endpoint(data: CreateDietSchema) -> tuple[Response, int]:
     try:
         created_diet = diet_service.create_diet(data.dict())
         return jsonify(bson_to_json(created_diet)), 201
@@ -26,7 +25,7 @@ def create_diet_endpoint(data: CreateDietSchema) -> Tuple[Response, int]:
 
 
 @diet_bp.route("/<diet_id>", methods=["GET"])
-def get_diet(diet_id: str) -> Tuple[Response, int]:
+def get_diet(diet_id: str) -> tuple[Response, int]:
     try:
         diet = diet_service.get_diet_by_id(diet_id)
         if diet:
@@ -38,7 +37,7 @@ def get_diet(diet_id: str) -> Tuple[Response, int]:
 
 
 @diet_bp.route("/", methods=["GET"])
-def get_diets_by_user_id() -> Tuple[Response, int]:
+def get_diets_by_user_id() -> tuple[Response, int]:
     user_id = request.args.get("user_id")
     if not user_id:
         return jsonify({"error": "Query param 'user_id' is required"}), 400
@@ -51,7 +50,7 @@ def get_diets_by_user_id() -> Tuple[Response, int]:
 
 
 @diet_bp.route("/<diet_id>", methods=["PUT"])
-def update_diet(diet_id: str) -> Tuple[Response, int]:
+def update_diet(diet_id: str) -> tuple[Response, int]:
     data = request.get_json()
     try:
         updated_diet = diet_service.update_diet(diet_id, data)
@@ -61,7 +60,7 @@ def update_diet(diet_id: str) -> Tuple[Response, int]:
 
 
 @diet_bp.route("/<diet_id>", methods=["DELETE"])
-def delete_diet(diet_id: str) -> Tuple[Response, int]:
+def delete_diet(diet_id: str) -> tuple[Response, int]:
     try:
         diet_service.delete_diet(diet_id)
         return jsonify({"message": "Diet successfully deleted!"}), 200

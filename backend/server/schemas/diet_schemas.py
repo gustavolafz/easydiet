@@ -1,8 +1,6 @@
 # schemas/diet_schemas.py
 
-from typing import List, Literal
 
-from bson import ObjectId
 from pydantic import BaseModel, Field
 
 
@@ -14,12 +12,12 @@ class RecipeReference(BaseModel):
 class Meal(BaseModel):
     name: str
     time: str  # HH:mm
-    recipes: List[RecipeReference]
+    recipes: list[RecipeReference]
 
 
 class CreateDietSchema(BaseModel):
     user_id: str
     title: str
     description: str
-    meals: List[Meal]
+    meals: list[Meal]
     public: bool = False

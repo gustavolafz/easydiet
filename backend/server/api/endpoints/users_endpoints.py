@@ -1,6 +1,6 @@
 # api/endpoints/users_endpoints.py
 
-from typing import Any, Tuple
+from typing import Any
 
 from flask import Blueprint, Response, current_app, jsonify
 
@@ -12,7 +12,7 @@ user_bp = Blueprint("user", __name__)
 
 
 @user_bp.route("/<user_id>", methods=["GET"])
-def get_user_endpoint(user_id: str) -> Tuple[Response, int]:
+def get_user_endpoint(user_id: str) -> tuple[Response, int]:
     """
     GET /user/<user_id>
     """
@@ -32,7 +32,7 @@ def get_user_endpoint(user_id: str) -> Tuple[Response, int]:
 
 @user_bp.route("/<user_id>", methods=["PUT"])
 @validate_json(UpdateUser)
-def update_user_endpoint(data: Any, user_id: str) -> Tuple[Response, int]:
+def update_user_endpoint(data: Any, user_id: str) -> tuple[Response, int]:
     """
     PUT /user/<user_id>
     """
@@ -52,7 +52,7 @@ def update_user_endpoint(data: Any, user_id: str) -> Tuple[Response, int]:
 
 
 @user_bp.route("/<user_id>", methods=["DELETE"])
-def delete_user_endpoint(user_id: str) -> Tuple[Response, int]:
+def delete_user_endpoint(user_id: str) -> tuple[Response, int]:
     """
     DELETE /user/<user_id>
     """

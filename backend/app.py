@@ -1,11 +1,9 @@
 # app.py
 
-from typing import Optional
 
 from flask import Flask, Response, request
 from flask_cors import CORS
 from middleware import jwt_middleware
-
 from server.api.endpoints import auth_bp, diet_bp, food_bp, recipe_bp, user_bp
 from server.core.config import Config
 from server.core.error_handlers import register_error_handlers
@@ -33,7 +31,7 @@ app = create_app()
 
 
 @app.before_request
-def run_middleware() -> Optional[Response]:
+def run_middleware() -> Response | None:
     if request.endpoint not in [
         "auth.login_user",
         "auth.register_user",

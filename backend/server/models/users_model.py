@@ -3,15 +3,15 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field
 import pytz
+from pydantic import BaseModel, EmailStr, Field
 
 from server.db.database import get_database
 from server.utils.bson_utils import PyObjectId
 
 
 class UserModel(BaseModel):
-    id: Optional[PyObjectId] = Field(default=None, alias="_id")
+    id: PyObjectId | None = Field(default=None, alias="_id")
     first_name: str
     last_name: str
     email: EmailStr

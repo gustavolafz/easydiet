@@ -1,9 +1,8 @@
-# utils/auth_utils.py
+# file: backend/server/utils/auth_utils.py
 
 import base64
 
 import requests
-
 from server.core.config import Config
 
 
@@ -21,7 +20,12 @@ def get_access_token() -> str:
 
     data = {"grant_type": "client_credentials"}
 
-    response = requests.post(url, headers=headers, data=data)
+    response = requests.post(
+        url,
+        headers=headers,
+        data=data,
+        timeout=Config.DEFAULT_TIMEOUT
+    )
 
     if response.status_code == 200:
         token = response.json()["access_token"]

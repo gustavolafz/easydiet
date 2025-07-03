@@ -1,9 +1,10 @@
 # core/validation_middleware.py
 
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable, TypeVar, cast
+from typing import Any, TypeVar, cast
 
-from flask import Response, jsonify, request
+from flask import jsonify, request
 from pydantic import ValidationError
 
 F = TypeVar("F", bound=Callable[..., Any])

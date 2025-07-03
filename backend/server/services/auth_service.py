@@ -1,7 +1,7 @@
 # services/auth_service.py
 
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from jose import JWTError, jwt
 
@@ -18,10 +18,10 @@ class AuthService:
         self.ACCESS_TOKEN_EXPIRE_DAYS = 7
         self.SECRET_KEY = Config.JWT_SECRET
 
-    def _get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
+    def _get_user_by_id(self, user_id: str) -> dict[str, Any] | None:
         return self.db.users.find_one({"_id": ObjectId(user_id)})
 
-    def register(self, user_data: Dict[str, Any]) -> Dict[str, str]:
+    def register(self, user_data: dict[str, Any]) -> dict[str, str]:
         existing_user = self.db.users.find_one({"email": user_data["email"]})
         if existing_user:
             raise ValueError("User with this email already exists")
@@ -46,7 +46,7 @@ class AuthService:
         result = self.db.users.insert_one(user.dict(by_alias=True, exclude={"id"}))
         return {"user_id": str(result.inserted_id)}
 
-    def login(self, user_data: Dict[str, Any]) -> Dict[str, Any]:
+    def login(self, user_data: dict[str, Any]) -> dict[str, Any]:
         user = self.db.users.find_one({"email": user_data["email"]})
         if not user:
             raise ValueError("User not found")
@@ -76,13 +76,13 @@ class AuthService:
             },
         }
 
-    def logout(self, user_id: str) -> Dict[str, str]:
+    def logout(self, user_id: str) -> dict[str, str]:
         result = self.db.tokens.delete_one({"user_id": user_id})
         if result.deleted_count == 0:
             raise ValueError("User not found or already logged out")
         return {"message": "Successfully logged out"}
 
-    def _create_token(self, data: Dict[str, Any], expires_delta: timedelta) -> str:
+    def _create_token(self, data: dict[str, Any], expires_delta: timedelta) -> str:
         to_encode = data.copy()
         expire = datetime.utcnow() + expires_delta
         to_encode.update({"exp": expire})
@@ -98,7 +98,6 @@ class AuthService:
             token_record = self.db.tokens.find_one(
                 {"user_id": user_id, "refresh_token": token}
             )
-
             if not token_record:
                 raise ValueError("Token not found or revoked")
 
@@ -106,5 +105,5 @@ class AuthService:
                 raise ValueError("Token expired")
 
             return True
-        except JWTError:
-            raise ValueError("Invalid token")
+        except JWTError as err:
+            raise ValueError("Invalid token") from err

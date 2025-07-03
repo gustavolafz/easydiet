@@ -1,8 +1,8 @@
 # schemas/auth_schemas.py
 
-from typing import Literal, Optional
+from typing import Literal
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
 
 
 class UserCreateSchema(BaseModel):
@@ -18,9 +18,10 @@ class UserCreateSchema(BaseModel):
     gender: Literal["male", "female", "other"]
     activity_level: Literal["low", "moderate", "high"]
     goal: Literal["perda de peso", "ganho de massa", "manutenção", "melhorar saúde"]
-    dietary_preference: Optional[
+    dietary_preference: (
         Literal["vegetariana", "vegana", "onívora", "low carb", "mediterrânea", "outro"]
-    ] = None
+        | None
+    ) = None
     dietary_restriction: list
 
     def validate_username(cls, v: str) -> str:

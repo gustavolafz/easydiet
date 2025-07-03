@@ -1,6 +1,6 @@
 # api/endpoints/auth_endpoints.py
 
-from typing import Any, Tuple
+from typing import Any
 
 from flask import Blueprint, Response, current_app, jsonify, request
 
@@ -13,7 +13,7 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
 @validate_json(UserCreateSchema)
-def register_user(data: UserCreateSchema) -> Tuple[Response, int]:
+def register_user(data: UserCreateSchema) -> tuple[Response, int]:
     current_app.logger.info("Register endpoint called")
     auth_service = AuthService()
     auth_service.register(data.model_dump())
@@ -22,7 +22,7 @@ def register_user(data: UserCreateSchema) -> Tuple[Response, int]:
 
 @auth_bp.route("/login", methods=["POST"])
 @validate_json(UserLoginSchema)
-def login_user(data: UserLoginSchema) -> Tuple[Response, int]:
+def login_user(data: UserLoginSchema) -> tuple[Response, int]:
     current_app.logger.info("Login endpoint called")
     auth_service = AuthService()
     payload = auth_service.login(data.model_dump())
@@ -30,7 +30,7 @@ def login_user(data: UserLoginSchema) -> Tuple[Response, int]:
 
 
 @auth_bp.route("/logout", methods=["POST"])
-def logout(data: Any) -> Tuple[Response, int]:
+def logout(data: Any) -> tuple[Response, int]:
     current_app.logger.info("Logout endpoint called")
     body = data.model_dump()
     auth_service = AuthService()
@@ -39,7 +39,7 @@ def logout(data: Any) -> Tuple[Response, int]:
 
 
 @auth_bp.route("/verify", methods=["POST"])
-def verify_user() -> Tuple[Response, int]:
+def verify_user() -> tuple[Response, int]:
     data = request.get_json()
     if "token" not in data:
         return jsonify({"error": "Token not provided"}), 400

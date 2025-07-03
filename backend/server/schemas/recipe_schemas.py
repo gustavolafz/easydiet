@@ -1,9 +1,7 @@
 # schemas/recipe_schemas.py
 
-from typing import List, Optional
 
-from bson import ObjectId
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class Ingredient(BaseModel):
@@ -23,6 +21,6 @@ class Nutrients(BaseModel):
 class CreateRecipe(BaseModel):
     user_id: str
     title: str
-    description: Optional[str] = ""
-    ingredients: List[Ingredient]
+    description: str | None = ""
+    ingredients: list[Ingredient]
     public: bool = False

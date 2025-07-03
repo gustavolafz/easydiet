@@ -2,7 +2,6 @@
 
 from flask import Response, g, jsonify, request
 from jose import JWTError, jwt
-
 from server.core.config import Config
 
 

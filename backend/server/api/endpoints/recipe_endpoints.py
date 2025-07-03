@@ -1,6 +1,5 @@
 # api/endpoints/recipe_endpoints.py
 
-from typing import Any, Tuple
 
 from bson import ObjectId
 from flask import Blueprint, Response, jsonify, request
@@ -8,14 +7,13 @@ from flask import Blueprint, Response, jsonify, request
 from server.core.validation_middleware import validate_json
 from server.schemas import CreateRecipe
 from server.services import RecipeService
-from server.utils.bson_utils import convert_objectid_to_str
 
 recipe_bp = Blueprint("recipe", __name__)
 recipe_service = RecipeService()
 
 
 @recipe_bp.route("/<recipe_id>", methods=["GET"])
-def get_recipe(recipe_id: str) -> Tuple[Response, int] | Response:
+def get_recipe(recipe_id: str) -> tuple[Response, int] | Response:
     try:
         recipe = recipe_service.db.recipes.find_one({"_id": ObjectId(recipe_id)})
         if not recipe:
@@ -56,7 +54,7 @@ def get_recipes_by_user() -> Response:
 
 
 @recipe_bp.route("/<recipe_id>", methods=["PUT"])
-def update_recipe(recipe_id: str) -> Tuple[Response, int]:
+def update_recipe(recipe_id: str) -> tuple[Response, int]:
     try:
         data = request.get_json()
         updated_message = recipe_service.update_recipe(recipe_id, data)
@@ -66,7 +64,7 @@ def update_recipe(recipe_id: str) -> Tuple[Response, int]:
 
 
 @recipe_bp.route("/<recipe_id>", methods=["DELETE"])
-def delete_recipe(recipe_id: str) -> Tuple[Response, int]:
+def delete_recipe(recipe_id: str) -> tuple[Response, int]:
     try:
         delete_message = recipe_service.delete_recipe(recipe_id)
         return jsonify(delete_message), 200
@@ -76,7 +74,7 @@ def delete_recipe(recipe_id: str) -> Tuple[Response, int]:
 
 @recipe_bp.route("/", methods=["POST"])
 @validate_json(CreateRecipe)
-def create_recipe_endpoint(data: CreateRecipe) -> Tuple[Response, int]:
+def create_recipe_endpoint(data: CreateRecipe) -> tuple[Response, int]:
     try:
         inserted_id = recipe_service.create_recipe(data.dict())
         return jsonify({"message": "Recipe created", "id": inserted_id}), 201

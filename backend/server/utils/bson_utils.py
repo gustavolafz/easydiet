@@ -1,7 +1,8 @@
 # utils/bson_utils.py
 
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Any, Dict, Iterator
+from typing import Any
 
 from bson import ObjectId
 
@@ -28,7 +29,7 @@ def convert_objectid_to_str(document: Any) -> Any:
     if not isinstance(document, dict):
         return document
 
-    converted: Dict[Any, Any] = {}
+    converted: dict[Any, Any] = {}
     for key, value in document.items():
         if isinstance(value, ObjectId):
             converted[key] = str(value)

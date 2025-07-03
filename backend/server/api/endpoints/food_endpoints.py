@@ -1,11 +1,9 @@
 # api/endpoints/food_endpoints.py
 
-from datetime import datetime
 import difflib
-from typing import Any, Tuple
+from datetime import datetime
 
 from flask import Blueprint, Response, jsonify, request
-import requests
 
 from server.api.external_api.fatsecret import search_food
 from server.core.validation_middleware import validate_json
@@ -78,7 +76,7 @@ def get_or_search_food() -> Response:
 
 @food_bp.route("/", methods=["POST"])
 @validate_json(CreateFoodShema)
-def create_food_endpoint(data: CreateFoodShema) -> Tuple[Response, int]:
+def create_food_endpoint(data: CreateFoodShema) -> tuple[Response, int]:
     try:
         serving = food_service.parse_food_description(data.description)
         food_doc = {
