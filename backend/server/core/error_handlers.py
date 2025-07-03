@@ -1,28 +1,28 @@
 # core/error_handlers.py
 
-from flask import jsonify
+from flask import Flask, Response, jsonify
 from pydantic import ValidationError
 from werkzeug.exceptions import HTTPException
 
 
-def register_error_handlers(app):
+def register_error_handlers(app: Flask) -> None:
 
     @app.errorhandler(ValidationError)
-    def handle_validation_error(error):
+    def handle_validation_error(error: ValidationError) -> tuple[Response, int]:
         app.logger.error(f"Validation Error: {str(error)}")
         return jsonify({"error": "Dados inválidos", "details": str(error)}), 400
 
     @app.errorhandler(ValueError)
-    def handle_value_error(error):
+    def handle_value_error(error: ValueError) -> tuple[Response, int]:
         app.logger.error(f"Value Error: {str(error)}")
         return jsonify({"error": "Erro de valor inválido", "details": str(error)}), 400
 
     @app.errorhandler(HTTPException)
-    def handle_http_exception(error):
+    def handle_http_exception(error: HTTPException) -> tuple[Response, int]:
         app.logger.error(f"HTTP Exception: {error.description}")
         return jsonify({"error": error.description}), error.code
 
     @app.errorhandler(Exception)
-    def handle_general_exception(error):
+    def handle_general_exception(error: Exception) -> tuple[Response, int]:
         app.logger.error(f"Unhandled Exception: {str(error)}")
         return jsonify({"error": "Erro interno no servidor"}), 500

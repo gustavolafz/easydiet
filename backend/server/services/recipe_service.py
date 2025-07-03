@@ -1,6 +1,7 @@
 # services/recipe_service.py
 
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
 from bson import ObjectId
 
@@ -9,15 +10,17 @@ from server.services import FoodService
 
 
 class RecipeService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db = get_database()
         self.food_service = FoodService()
 
-    def calculate_total_nutrients(self, ingredients):
-        def safe_multiply(value, factor):
+    def calculate_total_nutrients(
+        self, ingredients: List[Dict[str, Any]]
+    ) -> Dict[str, float]:
+        def safe_multiply(value: Optional[Union[float, int]], factor: float) -> float:
             return (value or 0) * factor
 
-        total = {
+        total: Dict[str, float] = {
             "calories": 0.0,
             "carbohydrate": 0.0,
             "protein": 0.0,
@@ -31,7 +34,6 @@ class RecipeService:
                 continue
 
             serving = food["serving_sizes"][0]
-
             metric_amount = serving.get("metric_serving_amount") or 100
             try:
                 factor = item["quantity"] / metric_amount
@@ -46,17 +48,15 @@ class RecipeService:
 
         return {k: round(v, 2) for k, v in total.items()}
 
-    def get_recipes_by_user(self, user_id):
+    def get_recipes_by_user(self, user_id: str) -> List[Dict[str, Any]]:
         try:
             recipes = self.db.recipes.find({"user_id": ObjectId(user_id)})
-            result = []
+            result: List[Dict[str, Any]] = []
             for recipe in recipes:
-                # Convertendo food_id de cada ingrediente para string
                 ingredients = [
                     {**ingredient, "food_id": str(ingredient["food_id"])}
                     for ingredient in recipe["ingredients"]
                 ]
-
                 result.append(
                     {
                         "id": str(recipe["_id"]),
@@ -72,7 +72,7 @@ class RecipeService:
         except Exception as e:
             raise Exception(f"Error fetching recipes: {str(e)}")
 
-    def update_recipe(self, recipe_id, data):
+    def update_recipe(self, recipe_id: str, data: Dict[str, Any]) -> Dict[str, str]:
         try:
             recipe = self.db.recipes.find_one({"_id": ObjectId(recipe_id)})
             if not recipe:
@@ -96,7 +96,7 @@ class RecipeService:
         except Exception as e:
             raise Exception(f"Error updating recipe: {str(e)}")
 
-    def delete_recipe(self, recipe_id):
+    def delete_recipe(self, recipe_id: str) -> Dict[str, str]:
         try:
             recipe = self.db.recipes.find_one({"_id": ObjectId(recipe_id)})
             if not recipe:
@@ -106,7 +106,7 @@ class RecipeService:
         except Exception as e:
             raise Exception(f"Error deleting recipe: {str(e)}")
 
-    def create_recipe(self, data: dict):
+    def create_recipe(self, data: Dict[str, Any]) -> str:
         ingredients = data["ingredients"]
         nutrients = self.calculate_total_nutrients(ingredients)
 

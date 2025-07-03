@@ -1,6 +1,7 @@
 # services/auth_service.py
 
 from datetime import datetime, timedelta
+from typing import Any, Dict, Optional, Union
 
 from jose import JWTError, jwt
 
@@ -12,24 +13,21 @@ from server.utils.bson_utils import PyObjectId as ObjectId
 
 
 class AuthService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db = get_database()
         self.ACCESS_TOKEN_EXPIRE_DAYS = 7
         self.SECRET_KEY = Config.JWT_SECRET
 
-    def _get_user_by_id(self, user_id: str):
+    def _get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
         return self.db.users.find_one({"_id": ObjectId(user_id)})
 
-    def register(self, user_data: dict):
-        # Verifica se o email já está registrado
+    def register(self, user_data: Dict[str, Any]) -> Dict[str, str]:
         existing_user = self.db.users.find_one({"email": user_data["email"]})
         if existing_user:
             raise ValueError("User with this email already exists")
 
-        # Faz o hash da senha
         hashed_password = hash_password(user_data["password"])
 
-        # Cria o usuário com todos os campos obrigatórios
         user = UserModel(
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
@@ -45,13 +43,10 @@ class AuthService:
             dietary_restriction=user_data["dietary_restriction"],
         )
 
-        # Remove o campo 'id' para não sobrescrever o _id do MongoDB
         result = self.db.users.insert_one(user.dict(by_alias=True, exclude={"id"}))
-
-        # Retorna o id do usuário criado
         return {"user_id": str(result.inserted_id)}
 
-    def login(self, user_data: dict):
+    def login(self, user_data: Dict[str, Any]) -> Dict[str, Any]:
         user = self.db.users.find_one({"email": user_data["email"]})
         if not user:
             raise ValueError("User not found")
@@ -66,7 +61,6 @@ class AuthService:
 
         expires_at = datetime.utcnow() + timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS)
 
-        # salva ou atualiza o token no banco
         self.db.tokens.update_one(
             {"user_id": str(user["_id"])},
             {"$set": {"refresh_token": token, "expires_at": expires_at}},
@@ -82,27 +76,25 @@ class AuthService:
             },
         }
 
-    def logout(self, user_id: str):
-        # Remove o token do banco de dados para efetuar o logout
+    def logout(self, user_id: str) -> Dict[str, str]:
         result = self.db.tokens.delete_one({"user_id": user_id})
         if result.deleted_count == 0:
             raise ValueError("User not found or already logged out")
         return {"message": "Successfully logged out"}
 
-    def _create_token(self, data: dict, expires_delta: timedelta):
+    def _create_token(self, data: Dict[str, Any], expires_delta: timedelta) -> str:
         to_encode = data.copy()
         expire = datetime.utcnow() + expires_delta
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, self.SECRET_KEY, algorithm="HS256")
 
-    def verify_token(self, token: str):
+    def verify_token(self, token: str) -> bool:
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=["HS256"])
             user_id = payload.get("sub")
             if user_id is None:
                 raise ValueError("Invalid token")
 
-            # checar se o token ainda está registrado no banco
             token_record = self.db.tokens.find_one(
                 {"user_id": user_id, "refresh_token": token}
             )

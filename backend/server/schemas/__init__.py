@@ -1,15 +1,7 @@
 # schemas/__init__.py
 
 from .auth_schemas import UserCreateSchema, UserLoginSchema
-from .diet_schemas import (
-    RecipeReference,
-    Meal,
-    CreateDietSchema
-    )
+from .diet_schemas import CreateDietSchema, Meal, RecipeReference
 from .food_schemas import CreateFoodShema
-from .recipe_schemas import (
-    Ingredient,
-    Nutrients,
-    CreateRecipe
-)
+from .recipe_schemas import CreateRecipe, Ingredient, Nutrients
 from .users_schemas import UpdateUser

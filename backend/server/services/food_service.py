@@ -1,26 +1,29 @@
 # services/food_service.py
 
-import re
 from datetime import datetime
+import re
+from typing import Any, Dict, Optional
 
 from server.db.database import get_database
 from server.utils.bson_utils import PyObjectId as ObjectId
 
 
 class FoodService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db = get_database()
         self.collection = self.db["foods"]
 
-    def parse_food_description(self, desc: str) -> dict:
+    def parse_food_description(
+        self, desc: str
+    ) -> Dict[str, Optional[float | int | str]]:
         """
-        Recebe a string food_description e retorna um dicionário com os nutrientes extraídos.
+        Receives the food_description string and returns a dictionary with the extracted nutrients.
         """
         match = re.search(r"Per\s+(\d+)(\w+)", desc)
         amount = int(match.group(1)) if match else 100
         unit = match.group(2) if match else "g"
 
-        def extract(pattern):
+        def extract(pattern: str) -> Optional[float]:
             m = re.search(pattern, desc)
             return float(m.group(1)) if m else None
 
@@ -34,9 +37,9 @@ class FoodService:
             "fiber": extract(r"Fiber:\s*([\d.]+)g"),
         }
 
-    def create_food(self, food_data: dict):
+    def create_food(self, food_data: Dict[str, Any]) -> str:
         """
-        Converte o alimento bruto da API para o modelo local e insere no banco de dados.
+        Converts the raw food from the API to the local model and inserts it into the database.
         """
         serving = self.parse_food_description(food_data["food_description"])
 

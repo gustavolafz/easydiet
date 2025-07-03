@@ -1,6 +1,8 @@
 # api/endpoints/users_endpoints.py
 
-from flask import Blueprint, current_app, jsonify
+from typing import Any, Tuple
+
+from flask import Blueprint, Response, current_app, jsonify
 
 from server.core.validation_middleware import validate_json
 from server.schemas import UpdateUser
@@ -10,7 +12,7 @@ user_bp = Blueprint("user", __name__)
 
 
 @user_bp.route("/<user_id>", methods=["GET"])
-def get_user_endpoint(user_id):
+def get_user_endpoint(user_id: str) -> Tuple[Response, int]:
     """
     GET /user/<user_id>
     """
@@ -23,14 +25,14 @@ def get_user_endpoint(user_id):
     except ValueError as e:
         current_app.logger.error(f"[GET /user/{user_id}] User not found: {e}")
         return (
-            jsonify({"error": "user_not_found", "message": "Usuário não encontrado"}),
+            jsonify({"error": "user_not_found", "message": "User not found"}),
             404,
         )
 
 
 @user_bp.route("/<user_id>", methods=["PUT"])
 @validate_json(UpdateUser)
-def update_user_endpoint(data, user_id):
+def update_user_endpoint(data: Any, user_id: str) -> Tuple[Response, int]:
     """
     PUT /user/<user_id>
     """
@@ -44,13 +46,13 @@ def update_user_endpoint(data, user_id):
     except ValueError as e:
         current_app.logger.error(f"[PUT /user/{user_id}] Error updating user: {e}")
         return (
-            jsonify({"error": "update_failed", "message": "Erro ao atualizar usuário"}),
+            jsonify({"error": "update_failed", "message": "Error updating user"}),
             400,
         )
 
 
 @user_bp.route("/<user_id>", methods=["DELETE"])
-def delete_user_endpoint(user_id):
+def delete_user_endpoint(user_id: str) -> Tuple[Response, int]:
     """
     DELETE /user/<user_id>
     """
@@ -63,6 +65,6 @@ def delete_user_endpoint(user_id):
     except ValueError as e:
         current_app.logger.error(f"[DELETE /user/{user_id}] Error deleting user: {e}")
         return (
-            jsonify({"error": "delete_failed", "message": "Erro ao excluir usuário"}),
+            jsonify({"error": "delete_failed", "message": "Error deleting user"}),
             404,
         )

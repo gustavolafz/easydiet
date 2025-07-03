@@ -1,6 +1,7 @@
 # services/diet_service.py
 
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
 from bson import ObjectId
 
@@ -9,13 +10,13 @@ from server.utils.bson_utils import PyObjectId
 
 
 class DietService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db = get_database()
         self.recipe_collection = self.db["recipes"]
         self.diet_collection = self.db["diets"]
 
-    def create_diet(self, diet_data: dict):
-        total_nutrients = {
+    def create_diet(self, diet_data: Dict[str, Any]) -> Dict[str, Any]:
+        total_nutrients: Dict[str, float] = {
             "calories": 0,
             "carbohydrate": 0,
             "protein": 0,
@@ -29,16 +30,14 @@ class DietService:
                     {"_id": ObjectId(recipe_ref["recipe_id"])}
                 )
                 if not recipe:
-                    raise ValueError(
-                        f"Receita {recipe_ref['recipe_id']} não encontrada"
-                    )
+                    raise ValueError(f"Recipe {recipe_ref['recipe_id']} not found")
 
                 qty = recipe_ref["quantity"]
                 nutrients = recipe.get("total_nutrients", {})
                 for key in total_nutrients:
                     total_nutrients[key] += nutrients.get(key, 0) * qty
 
-        diet_doc = {
+        diet_doc: Dict[str, Any] = {
             "user_id": ObjectId(diet_data["user_id"]),
             "title": diet_data["title"],
             "description": diet_data["description"],
@@ -52,12 +51,11 @@ class DietService:
         diet_doc["_id"] = result.inserted_id
         return diet_doc
 
-    def get_diet_by_id(self, diet_id: str):
+    def get_diet_by_id(self, diet_id: str) -> Dict[str, Any]:
         diet = self.diet_collection.find_one({"_id": ObjectId(diet_id)})
         if not diet:
-            raise ValueError(f"Dieta com ID {diet_id} não encontrada")
+            raise ValueError(f"Diet with ID {diet_id} not found")
 
-        # Converte os ObjectIds para string
         diet["_id"] = str(diet["_id"])
         diet["user_id"] = str(diet["user_id"])
 
@@ -68,7 +66,7 @@ class DietService:
 
         return diet
 
-    def get_diets_by_user_id(self, user_id: str):
+    def get_diets_by_user_id(self, user_id: str) -> List[Dict[str, Any]]:
         diets = list(self.diet_collection.find({"user_id": ObjectId(user_id)}))
         if not diets:
             return []
@@ -83,12 +81,12 @@ class DietService:
 
         return diets
 
-    def update_diet(self, diet_id: str, diet_data: dict):
+    def update_diet(self, diet_id: str, diet_data: Dict[str, Any]) -> Dict[str, Any]:
         diet = self.diet_collection.find_one({"_id": ObjectId(diet_id)})
         if not diet:
-            raise ValueError(f"Dieta com ID {diet_id} não encontrada")
+            raise ValueError(f"Diet with ID {diet_id} not found")
 
-        total_nutrients = {
+        total_nutrients: Dict[str, float] = {
             "calories": 0,
             "carbohydrate": 0,
             "protein": 0,
@@ -102,16 +100,14 @@ class DietService:
                     {"_id": ObjectId(recipe_ref["recipe_id"])}
                 )
                 if not recipe:
-                    raise ValueError(
-                        f"Receita {recipe_ref['recipe_id']} não encontrada"
-                    )
+                    raise ValueError(f"Recipe {recipe_ref['recipe_id']} not found")
 
                 qty = recipe_ref["quantity"]
                 nutrients = recipe.get("total_nutrients", {})
                 for key in total_nutrients:
                     total_nutrients[key] += nutrients.get(key, 0) * qty
 
-        updated_diet = {
+        updated_diet: Dict[str, Any] = {
             "title": diet_data["title"],
             "description": diet_data["description"],
             "meals": diet_data["meals"],
@@ -125,7 +121,6 @@ class DietService:
 
         updated = self.diet_collection.find_one({"_id": ObjectId(diet_id)})
 
-        # Conversão para tipos serializáveis
         updated["_id"] = str(updated["_id"])
         updated["user_id"] = str(updated["user_id"])
         for meal in updated.get("meals", []):
@@ -135,8 +130,8 @@ class DietService:
 
         return updated
 
-    def delete_diet(self, diet_id: str):
+    def delete_diet(self, diet_id: str) -> Dict[str, str]:
         result = self.diet_collection.delete_one({"_id": ObjectId(diet_id)})
         if result.deleted_count == 0:
-            raise ValueError(f"Dieta com ID {diet_id} não encontrada")
-        return {"message": "Dieta deletada com sucesso"}
+            raise ValueError(f"Diet with ID {diet_id} not found")
+        return {"message": "Diet successfully deleted"}

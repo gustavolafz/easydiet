@@ -3,8 +3,8 @@
 from datetime import datetime
 from typing import Optional
 
-import pytz
 from pydantic import BaseModel, EmailStr, Field
+import pytz
 
 from server.db.database import get_database
 from server.utils.bson_utils import PyObjectId
@@ -36,8 +36,8 @@ class UserModel(BaseModel):
         )
 
     @classmethod
-    def get_by_email(cls, email: str):
-        db = get_database()  # Corrigido de get_client() para get_database()
+    def get_by_email(cls, email: str) -> Optional["UserModel"]:
+        db = get_database()
         user_data = db.users.find_one({"email": email})
 
         if user_data:

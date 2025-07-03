@@ -1,11 +1,12 @@
 # utils/json_encoder.py
 
 from datetime import datetime
+from typing import Any
 
 from bson import ObjectId
 
 
-def bson_to_json(data):
+def bson_to_json(data: Any) -> Any:
     if isinstance(data, list):
         return [bson_to_json(item) for item in data]
     elif isinstance(data, dict):

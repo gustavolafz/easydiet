@@ -7,10 +7,10 @@ import requests
 from server.core.config import Config
 
 
-def get_access_token():
+def get_access_token() -> str:
     url = "https://oauth.fatsecret.com/connect/token"
 
-    # FatSecret pede autenticação em Base64
+    # FatSecret requires Base64 authentication
     credentials = f"{Config.CLIENT_ID}:{Config.CLIENT_SECRET}"
     credentials_base64 = base64.b64encode(credentials.encode()).decode()
 
@@ -28,5 +28,5 @@ def get_access_token():
         return token
     else:
         raise Exception(
-            f"Erro ao pegar token: {response.status_code} - {response.text}"
+            f"Error fetching token: {response.status_code} - {response.text}"
         )

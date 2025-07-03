@@ -1,12 +1,14 @@
 # api/external_api/fatsecret.py
 
+from typing import Any
+
 import requests
 
 from server.core.config import Config
 
 
-def get_access_token():
-    """Obtém o token de acesso OAuth 2.0 da FatSecret."""
+def get_access_token() -> str:
+    """Obtains the FatSecret OAuth 2.0 access token."""
     url = "https://oauth.fatsecret.com/connect/token"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
@@ -20,8 +22,8 @@ def get_access_token():
     return response.json()["access_token"]
 
 
-def search_food(food_name):
-    """Pesquisa alimentos na FatSecret."""
+def search_food(food_name: str) -> Any:
+    """Searches foods on FatSecret."""
     token = get_access_token()
     search_url = "https://platform.fatsecret.com/rest/server.api"
 
@@ -32,7 +34,7 @@ def search_food(food_name):
     data = {
         "method": "foods.search",
         "search_expression": food_name,
-        "format": "json",  # Sempre peça o retorno em JSON
+        "format": "json",
     }
     response = requests.post(search_url, headers=headers, data=data)
     response.raise_for_status()
