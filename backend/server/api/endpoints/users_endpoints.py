@@ -11,7 +11,7 @@ from server.services import UserService
 user_bp = Blueprint("user", __name__)
 
 
-@user_bp.route("/<user_id>", methods=["GET"])
+@user_bp.route("/<user_id>", methods=["GET"])  # type: ignore[misc]
 def get_user_endpoint(user_id: str) -> tuple[Response, int]:
     """
     GET /user/<user_id>
@@ -30,7 +30,7 @@ def get_user_endpoint(user_id: str) -> tuple[Response, int]:
         )
 
 
-@user_bp.route("/<user_id>", methods=["PUT"])
+@user_bp.route("/<user_id>", methods=["PUT"])  # type: ignore[misc]
 @validate_json(UpdateUser)
 def update_user_endpoint(data: Any, user_id: str) -> tuple[Response, int]:
     """
@@ -51,7 +51,7 @@ def update_user_endpoint(data: Any, user_id: str) -> tuple[Response, int]:
         )
 
 
-@user_bp.route("/<user_id>", methods=["DELETE"])
+@user_bp.route("/<user_id>", methods=["DELETE"])  # type: ignore[misc]
 def delete_user_endpoint(user_id: str) -> tuple[Response, int]:
     """
     DELETE /user/<user_id>

@@ -1,4 +1,4 @@
-# models/users_model.py
+# backend/server/models/users_model.py
 
 from datetime import datetime
 from typing import Optional
@@ -23,23 +23,20 @@ class UserModel(BaseModel):
     height: str
     weight: str
     dietary_preference: str
-    dietary_restriction: list
+    dietary_restriction: list[str] = Field(default_factory=list)
     created_at: datetime = Field(
         default_factory=lambda: datetime.utcnow().replace(tzinfo=pytz.utc)
     )
 
     class Config:
         validate_by_name = True
+        populate_by_name = True
         json_encoders = {PyObjectId: str}
-        populate_by_name = (
-            True  # Isso ajuda a respeitar o alias na hora de criar o objeto
-        )
 
     @classmethod
     def get_by_email(cls, email: str) -> Optional["UserModel"]:
         db = get_database()
         user_data = db.users.find_one({"email": email})
-
         if user_data:
             return cls(**user_data)
         return None

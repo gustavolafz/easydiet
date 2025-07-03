@@ -11,7 +11,7 @@ from server.services import AuthService
 auth_bp = Blueprint("auth", __name__)
 
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["POST"])  # type: ignore[misc]
 @validate_json(UserCreateSchema)
 def register_user(data: UserCreateSchema) -> tuple[Response, int]:
     current_app.logger.info("Register endpoint called")
@@ -20,7 +20,7 @@ def register_user(data: UserCreateSchema) -> tuple[Response, int]:
     return jsonify({"message": "User created successfully"}), 201
 
 
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])  # type: ignore[misc]
 @validate_json(UserLoginSchema)
 def login_user(data: UserLoginSchema) -> tuple[Response, int]:
     current_app.logger.info("Login endpoint called")
@@ -29,7 +29,7 @@ def login_user(data: UserLoginSchema) -> tuple[Response, int]:
     return jsonify(payload), 200
 
 
-@auth_bp.route("/logout", methods=["POST"])
+@auth_bp.route("/logout", methods=["POST"])  # type: ignore[misc]
 def logout(data: Any) -> tuple[Response, int]:
     current_app.logger.info("Logout endpoint called")
     body = data.model_dump()
@@ -38,7 +38,7 @@ def logout(data: Any) -> tuple[Response, int]:
     return jsonify(payload), 200
 
 
-@auth_bp.route("/verify", methods=["POST"])
+@auth_bp.route("/verify", methods=["POST"])  # type: ignore[misc]
 def verify_user() -> tuple[Response, int]:
     data = request.get_json()
     if "token" not in data:

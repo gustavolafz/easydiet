@@ -12,7 +12,7 @@ diet_bp = Blueprint("diet", __name__)
 diet_service = DietService()
 
 
-@diet_bp.route("/", methods=["POST"])
+@diet_bp.route("/", methods=["POST"])  # type: ignore[misc]
 @validate_json(CreateDietSchema)
 def create_diet_endpoint(data: CreateDietSchema) -> tuple[Response, int]:
     try:
@@ -24,7 +24,7 @@ def create_diet_endpoint(data: CreateDietSchema) -> tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-@diet_bp.route("/<diet_id>", methods=["GET"])
+@diet_bp.route("/<diet_id>", methods=["GET"])  # type: ignore[misc]
 def get_diet(diet_id: str) -> tuple[Response, int]:
     try:
         diet = diet_service.get_diet_by_id(diet_id)
@@ -36,7 +36,7 @@ def get_diet(diet_id: str) -> tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-@diet_bp.route("/", methods=["GET"])
+@diet_bp.route("/", methods=["GET"])  # type: ignore[misc]
 def get_diets_by_user_id() -> tuple[Response, int]:
     user_id = request.args.get("user_id")
     if not user_id:
@@ -49,7 +49,7 @@ def get_diets_by_user_id() -> tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-@diet_bp.route("/<diet_id>", methods=["PUT"])
+@diet_bp.route("/<diet_id>", methods=["PUT"])  # type: ignore[misc]
 def update_diet(diet_id: str) -> tuple[Response, int]:
     data = request.get_json()
     try:
@@ -59,7 +59,7 @@ def update_diet(diet_id: str) -> tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-@diet_bp.route("/<diet_id>", methods=["DELETE"])
+@diet_bp.route("/<diet_id>", methods=["DELETE"])  # type: ignore[misc]
 def delete_diet(diet_id: str) -> tuple[Response, int]:
     try:
         diet_service.delete_diet(diet_id)

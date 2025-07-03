@@ -10,15 +10,15 @@ class UpdateUser(BaseModel):
     last_name: str
     email: EmailStr
 
-    birth_date: str  # Considerar usar date futuramente
-    weight: str  # Idealmente deveria ser float
-    height: str  # Idealmente deveria ser float
+    birth_date: str
+    weight: str
+    height: str
 
     gender: Literal["male", "female", "other"]
     activity_level: Literal["low", "moderate", "high"]
-    goal: Literal["perda de peso", "ganho de massa", "manutenção", "melhorar saúde"]
+    goal: Literal["weight loss", "muscle gain", "maintenance", "improve health"]
     dietary_preference: (
-        Literal["vegetariana", "vegana", "onívora", "low carb", "mediterrânea", "outro"]
+        Literal["vegetarian", "vegan", "omnivore", "low carb", "mediterranean", "other"]
         | None
     ) = None
-    dietary_restriction: list
+    dietary_restriction: list[str]

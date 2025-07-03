@@ -72,7 +72,6 @@ class RecipeService:
         except Exception as e:
             raise Exception(f"Error fetching recipes: {str(e)}") from e
 
-
     def update_recipe(self, recipe_id: str, data: dict[str, Any]) -> dict[str, str]:
         try:
             recipe = self.db.recipes.find_one({"_id": ObjectId(recipe_id)})
@@ -96,7 +95,6 @@ class RecipeService:
             return {"message": "Recipe updated successfully"}
         except Exception as e:
             raise Exception(f"Error updating recipe: {str(e)}") from e
-
 
     def delete_recipe(self, recipe_id: str) -> dict[str, str]:
         try:

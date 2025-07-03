@@ -7,7 +7,7 @@ from typing import Any
 from bson import ObjectId
 
 
-class PyObjectId(ObjectId):
+class PyObjectId(ObjectId):  # type: ignore[misc]
     @classmethod
     def __get_validators__(cls) -> Iterator[Any]:
         yield cls.validate

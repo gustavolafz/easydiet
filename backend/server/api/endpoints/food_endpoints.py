@@ -7,14 +7,14 @@ from flask import Blueprint, Response, jsonify, request
 
 from server.api.external_api.fatsecret import search_food
 from server.core.validation_middleware import validate_json
-from server.schemas import CreateFoodShema
+from server.schemas import CreateFoodSchema
 from server.services import FoodService
 
 food_bp = Blueprint("food", __name__)
 food_service = FoodService()
 
 
-@food_bp.route("/", methods=["GET"])
+@food_bp.route("/", methods=["GET"])  # type: ignore[misc]
 def get_or_search_food() -> Response:
     food_name = request.args.get("nome")
     if not food_name:
@@ -74,9 +74,9 @@ def get_or_search_food() -> Response:
         return jsonify({"error": str(e)}), 500
 
 
-@food_bp.route("/", methods=["POST"])
-@validate_json(CreateFoodShema)
-def create_food_endpoint(data: CreateFoodShema) -> tuple[Response, int]:
+@food_bp.route("/", methods=["POST"])  # type: ignore[misc]
+@validate_json(CreateFoodSchema)
+def create_food_endpoint(data: CreateFoodSchema) -> tuple[Response, int]:
     try:
         serving = food_service.parse_food_description(data.description)
         food_doc = {

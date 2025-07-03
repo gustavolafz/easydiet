@@ -1,7 +1,7 @@
-# services/auth_service.py
+# backend/server/services/auth_service.py
 
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, cast
 
 from jose import JWTError, jwt
 
@@ -19,20 +19,26 @@ class AuthService:
         self.SECRET_KEY = Config.JWT_SECRET
 
     def _get_user_by_id(self, user_id: str) -> dict[str, Any] | None:
-        return self.db.users.find_one({"_id": ObjectId(user_id)})
+        """
+        Retrieve a user document by its ObjectId.
+        Returns None if not found.
+        """
+        raw = self.db.users.find_one({"_id": ObjectId(user_id)})
+        if raw is None:
+            return None
+        return cast(dict[str, Any], raw)
 
     def register(self, user_data: dict[str, Any]) -> dict[str, str]:
-        existing_user = self.db.users.find_one({"email": user_data["email"]})
-        if existing_user:
+        existing = self.db.users.find_one({"email": user_data["email"]})
+        if existing:
             raise ValueError("User with this email already exists")
 
-        hashed_password = hash_password(user_data["password"])
-
+        hashed = hash_password(user_data["password"])
         user = UserModel(
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
             email=user_data["email"],
-            password=hashed_password,
+            password=hashed,
             activity_level=user_data["activity_level"],
             birth_date=user_data["birth_date"],
             gender=user_data["gender"],
@@ -54,23 +60,25 @@ class AuthService:
         if not verify_password(user_data["password"], user["password"]):
             raise ValueError("Invalid password")
 
-        token = self._create_token(
+        access_token = self._create_token(
             data={"sub": str(user["_id"])},
             expires_delta=timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS),
         )
-
         expires_at = datetime.utcnow() + timedelta(days=self.ACCESS_TOKEN_EXPIRE_DAYS)
 
         self.db.tokens.update_one(
             {"user_id": str(user["_id"])},
-            {"$set": {"refresh_token": token, "expires_at": expires_at}},
+            {"$set": {"refresh_token": access_token, "expires_at": expires_at}},
             upsert=True,
         )
 
+        # Return user info without password
+        safe_user = {k: str(v) for k, v in user.items() if k != "password"}
+
         return {
-            "user": {k: str(v) for k, v in user.items() if k != "password"},
+            "user": safe_user,
             "token": {
-                "access_token": token,
+                "access_token": access_token,
                 "token_type": "bearer",
                 "expires_at": expires_at,
             },
@@ -83,25 +91,34 @@ class AuthService:
         return {"message": "Successfully logged out"}
 
     def _create_token(self, data: dict[str, Any], expires_delta: timedelta) -> str:
+        """
+        Create a JWT with an expiration.
+        """
         to_encode = data.copy()
         expire = datetime.utcnow() + expires_delta
         to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, self.SECRET_KEY, algorithm="HS256")
+
+        raw_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm="HS256")
+        return cast(str, raw_token)
 
     def verify_token(self, token: str) -> bool:
+        """
+        Verify the provided JWT and ensure it matches a stored refresh token
+        that has not expired.
+        """
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=["HS256"])
             user_id = payload.get("sub")
-            if user_id is None:
-                raise ValueError("Invalid token")
+            if not isinstance(user_id, str):
+                raise ValueError("Invalid token payload")
 
-            token_record = self.db.tokens.find_one(
+            record = self.db.tokens.find_one(
                 {"user_id": user_id, "refresh_token": token}
             )
-            if not token_record:
+            if not record:
                 raise ValueError("Token not found or revoked")
 
-            if token_record["expires_at"] < datetime.utcnow():
+            if record["expires_at"] < datetime.utcnow():
                 raise ValueError("Token expired")
 
             return True

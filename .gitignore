@@ -1,0 +1,24 @@
+# Node
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env
+
+# Python
+/backend/__pycache__/
+/backend/.venv/
+/backend/.env
+
+# Outros
+*.log
+.logs
+.env
+*.sqlite3
+*.bundle
+*.patch
+*.toml
+.utils
+.snapshot
+.venv
+.mypy_cache
+.ruff_cache
+.pytest_cache

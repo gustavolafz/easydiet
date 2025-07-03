@@ -12,7 +12,7 @@ recipe_bp = Blueprint("recipe", __name__)
 recipe_service = RecipeService()
 
 
-@recipe_bp.route("/<recipe_id>", methods=["GET"])
+@recipe_bp.route("/<recipe_id>", methods=["GET"])  # type: ignore[misc]
 def get_recipe(recipe_id: str) -> tuple[Response, int] | Response:
     try:
         recipe = recipe_service.db.recipes.find_one({"_id": ObjectId(recipe_id)})
@@ -41,7 +41,7 @@ def get_recipe(recipe_id: str) -> tuple[Response, int] | Response:
         return jsonify({"error": str(e)}), 500
 
 
-@recipe_bp.route("/", methods=["GET"])
+@recipe_bp.route("/", methods=["GET"])  # type: ignore[misc]
 def get_recipes_by_user() -> Response:
     user_id = request.args.get("user_id")
     if not user_id:
@@ -53,7 +53,7 @@ def get_recipes_by_user() -> Response:
         return jsonify({"error": str(e)}), 500
 
 
-@recipe_bp.route("/<recipe_id>", methods=["PUT"])
+@recipe_bp.route("/<recipe_id>", methods=["PUT"])  # type: ignore[misc]
 def update_recipe(recipe_id: str) -> tuple[Response, int]:
     try:
         data = request.get_json()
@@ -63,7 +63,7 @@ def update_recipe(recipe_id: str) -> tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-@recipe_bp.route("/<recipe_id>", methods=["DELETE"])
+@recipe_bp.route("/<recipe_id>", methods=["DELETE"])  # type: ignore[misc]
 def delete_recipe(recipe_id: str) -> tuple[Response, int]:
     try:
         delete_message = recipe_service.delete_recipe(recipe_id)
@@ -72,7 +72,7 @@ def delete_recipe(recipe_id: str) -> tuple[Response, int]:
         return jsonify({"error": str(e)}), 500
 
 
-@recipe_bp.route("/", methods=["POST"])
+@recipe_bp.route("/", methods=["POST"])  # type: ignore[misc]
 @validate_json(CreateRecipe)
 def create_recipe_endpoint(data: CreateRecipe) -> tuple[Response, int]:
     try:

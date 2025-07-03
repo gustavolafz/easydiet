@@ -4,7 +4,7 @@
 from pydantic import BaseModel
 
 
-class CreateFoodShema(BaseModel):
+class CreateFoodSchema(BaseModel):
     fatsecret_id: str
     name: str
     category: str

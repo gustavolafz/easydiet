@@ -30,7 +30,7 @@ def create_app() -> Flask:
 app = create_app()
 
 
-@app.before_request
+@app.before_request  # type: ignore[misc]
 def run_middleware() -> Response | None:
     if request.endpoint not in [
         "auth.login_user",
