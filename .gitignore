@@ -15,9 +15,8 @@
 *.sqlite3
 *.bundle
 *.patch
-*.toml
 .utils
-.snapshot
+.snapshots
 .venv
 .mypy_cache
 .ruff_cache

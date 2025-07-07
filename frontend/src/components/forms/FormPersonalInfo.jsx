@@ -146,10 +146,10 @@ const FormPersonalInfo = ({ baseData }) => {
             onChange={handleChange}
             options={[
               { value: "", label: "Selecione" },
-              { value: "perda de peso", label: "Perda de peso" },
-              { value: "ganho de massa", label: "Ganho de massa" },
-              { value: "manutenção", label: "Manutenção" },
-              { value: "melhorar saúde", label: "Melhorar saúde" },
+              { value: "weight_loss", label: "Perda de peso" },
+              { value: "muscle_gain", label: "Ganho de massa" },
+              { value: "maintenance", label: "Manutenção" },
+              { value: "improve_health", label: "Melhorar saúde" },
             ]}
           />
           <Select
@@ -159,12 +159,12 @@ const FormPersonalInfo = ({ baseData }) => {
             onChange={handleChange}
             options={[
               { value: "", label: "Selecione" },
-              { value: "vegetariana", label: "Vegetariana" },
-              { value: "vegana", label: "Vegana" },
-              { value: "onívora", label: "Onívora" },
-              { value: "low carb", label: "Low Carb" },
-              { value: "mediterrânea", label: "Mediterrânea" },
-              { value: "outro", label: "Outro" },
+              { value: "vegetarian", label: "Vegetariana" },
+              { value: "vegan", label: "Vegana" },
+              { value: "omnivore", label: "Onívora" },
+              { value: "low_carb", label: "Low Carb" },
+              { value: "mediterranean", label: "Mediterrânea" },
+              { value: "other", label: "Outro" },
             ]}
           />
           <div>

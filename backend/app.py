@@ -3,6 +3,7 @@
 
 from flask import Flask, Response, request
 from flask_cors import CORS
+
 from middleware import jwt_middleware
 from server.api.endpoints import auth_bp, diet_bp, food_bp, recipe_bp, user_bp
 from server.core.config import Config

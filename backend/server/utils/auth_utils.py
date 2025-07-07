@@ -4,6 +4,7 @@ import base64
 from typing import Any
 
 import requests
+
 from server.core.config import Config
 
 

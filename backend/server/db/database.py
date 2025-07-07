@@ -2,6 +2,7 @@
 
 from pymongo import MongoClient
 from pymongo.database import Database
+
 from server.core.config import Config
 
 
