@@ -1,54 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
+import { useUserRecipes, useUserDiets } from '@/hooks/useApi';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 export default function ProfilePage({ userInfo }) {
-  const [recipes, setRecipes] = useState([]);
-  const [diets, setDiets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { recipes, isLoading: isLoadingRecipes } = useUserRecipes(userInfo._id);
+  const { diets, isLoading: isLoadingDiets } = useUserDiets(userInfo._id);
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
+  const isLoading = isLoadingRecipes || isLoadingDiets;
 
-  const fetchUserData = async () => {
-    setLoading(true);
-    try {
-      const [recipeRes, dietRes] = await Promise.all([
-        fetch(`/api/user/recipe?user_id=${userInfo._id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }),
-        fetch(`/api/user/diet?user_id=${userInfo._id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }),
-      ]);
-
-      const recipeData = await recipeRes.json();
-      const dietData = await dietRes.json();
-
-      if (!recipeRes.ok || !dietRes.ok) {
-        throw new Error(recipeData.message || dietData.message || "Erro ao buscar dados do usuário.");
-      }
-
-      setRecipes(Array.isArray(recipeData) ? recipeData : [recipeData]);
-      setDiets(Array.isArray(dietData) ? dietData : [dietData]);
-    } catch (error) {
-      console.error("Erro ao buscar dados do usuário:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-700 text-lg animate-pulse">Carregando perfil...</p>
-      </div>
-    );
+  if (isLoading) {
+    return <LoadingSpinner text="Carregando perfil..." />;
   }
 
   const { first_name, last_name, email, activity_level, birth_date, goal, gender, height, weight } = userInfo;

@@ -8,6 +8,7 @@ import {
   CheckIcon,
   CaretDownIcon,
 } from "@radix-ui/react-icons";
+import Image from "next/image";
 
 export default function Profile({ user }) {
   const [modo, setModo] = useState("visualizar"); // visualizar, editar
@@ -145,10 +146,13 @@ export default function Profile({ user }) {
         <div className="relative mb-4">
           <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
             {usuario.fotoPerfil ? (
-              <img
+              <Image
                 src={usuario.fotoPerfil}
                 alt="Foto de perfil"
-                className="w-full h-full object-cover"
+                width={96}
+                height={96}
+                className="object-cover"
+                priority
               />
             ) : (
               <span className="text-4xl text-gray-400">👤</span>

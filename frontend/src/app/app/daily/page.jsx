@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { PlusIcon, Cross2Icon, MagnifyingGlassIcon, CalendarIcon } from '@radix-ui/react-icons';
 
@@ -47,37 +47,44 @@ export default function Daily() {
     { id: 6, nome: 'Aveia', calorias: 187, proteinas: 6.9, carboidratos: 33.7, gorduras: 3.4 },
   ]);
 
-  // Obter as refeições do dia selecionado
-  const buscarRefeicoesDoDia = (data) => {
+  // Calcula o total de calorias do dia usando useMemo
+  const totalCaloriasDia = useMemo(() => {
+    return refeicoesHoje.reduce((total, refeicao) => total + refeicao.totalCalorias, 0);
+  }, [refeicoesHoje]);
+
+  // Calcula os macros totais do dia
+  const macrosTotais = useMemo(() => {
+    return refeicoesHoje.reduce((totais, refeicao) => {
+      refeicao.alimentos.forEach(alimento => {
+        // Simulação de cálculo de macros
+        totais.proteinas += alimento.proteinas || 0;
+        totais.carboidratos += alimento.carboidratos || 0;
+        totais.gorduras += alimento.gorduras || 0;
+      });
+      return totais;
+    }, { proteinas: 0, carboidratos: 0, gorduras: 0 });
+  }, [refeicoesHoje]);
+
+  // Otimiza a função de buscar refeições
+  const buscarRefeicoesDoDia = useCallback((data) => {
     // Simulação de chamada à API
-    // const fetchRefeicoes = async (data) => {
-    //   try {
-    //     const dataFormatada = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
-    //     const response = await fetch(`/api/refeicoes/${dataFormatada}`);
-    //     const dados = await response.json();
-    //     setRefeicoesHoje(dados);
-    //   } catch (error) {
-    //     console.error('Erro ao buscar refeições:', error);
-    //   }
-    // };
-    //
-    // fetchRefeicoes(data);
-  };
+    console.log('Buscando refeições para:', data);
+  }, []);
 
   React.useEffect(() => {
     buscarRefeicoesDoDia(dataAtual);
-  }, [dataAtual]);
+  }, [dataAtual, buscarRefeicoesDoDia]);
 
-  const abrirModal = (tipoRefeicao) => {
+  const abrirModal = useCallback((tipoRefeicao) => {
     setRefeicaoSelecionada(tipoRefeicao);
     setModalAberto(true);
-  };
+  }, []);
 
-  const fecharModal = () => {
+  const fecharModal = useCallback(() => {
     setModalAberto(false);
     setRefeicaoSelecionada(null);
     setTermoBusca('');
-  };
+  }, []);
 
   const adicionarAlimento = (alimento) => {
     // Simulação de chamada à API para adicionar alimento
@@ -252,14 +259,14 @@ export default function Daily() {
         <h2 className="text-sm font-medium text-gray-600 mb-2">Total de calorias</h2>
         <div className="flex justify-between items-center">
           <span className="text-3xl font-bold">
-            {refeicoesHoje.reduce((total, refeicao) => total + refeicao.totalCalorias, 0)}
+            {totalCaloriasDia}
           </span>
           <span className="text-gray-500">/ 2000 kcal</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
           <div 
             className="bg-green-500 h-2.5 rounded-full" 
-            style={{ width: `${Math.min(refeicoesHoje.reduce((total, refeicao) => total + refeicao.totalCalorias, 0) / 2000 * 100, 100)}%` }}
+            style={{ width: `${Math.min(totalCaloriasDia / 2000 * 100, 100)}%` }}
           ></div>
         </div>
       </motion.div>

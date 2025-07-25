@@ -68,10 +68,19 @@ export default function More() {
     },
     {
       id: 'contact',
-      icon: <EnvelopeClosedIcon className="w-5 h-5 text-teal-500" />,
+      icon: <EnvelopeClosedIcon className="w-5 h-5 text-purple-500" />,
       title: 'Contato',
-      description: 'Entre em contato com nosso suporte',
-      action: () => window.location.href = 'projetoeasydiet@gmail.com'
+      description: 'Entre em contato com nossa equipe',
+      action: () => {
+        const email = 'projetoeasydiet@gmail.com';
+        const subject = 'Contato EasyDiet';
+        const body = 'Olá, gostaria de entrar em contato sobre...';
+        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        // Abre o cliente de email padrão
+        const link = document.createElement('a');
+        link.href = mailtoLink;
+        link.click();
+      }
     }
   ];
 

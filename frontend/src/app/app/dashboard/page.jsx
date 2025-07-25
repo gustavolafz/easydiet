@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons';
 
@@ -18,6 +18,24 @@ export default function Dashboard() {
     passosAlvo: 10000
   });
 
+  // Memoiza cálculos de porcentagem
+  const porcentagens = useMemo(() => ({
+    calorias: Math.min(Math.round((metricas.caloriasConsumidas / metricas.caloriasAlvo) * 100), 100),
+    agua: Math.min(Math.round((metricas.aguaConsumida / metricas.aguaAlvo) * 100), 100),
+    passos: Math.min(Math.round((metricas.passosDados / metricas.passosAlvo) * 100), 100)
+  }), [metricas]);
+
+  // Memoiza cálculo de macros totais
+  const macrosTotais = useMemo(() => {
+    const total = metricas.proteinas + metricas.carboidratos + metricas.gorduras;
+    return {
+      total,
+      proteinasPerc: Math.round((metricas.proteinas / total) * 100),
+      carboidratosPerc: Math.round((metricas.carboidratos / total) * 100),
+      gordurasPerc: Math.round((metricas.gorduras / total) * 100)
+    };
+  }, [metricas.proteinas, metricas.carboidratos, metricas.gorduras]);
+
   // Simular chamada à API para obter os dados
   React.useEffect(() => {
     // Aqui seria feita a chamada à API
@@ -34,9 +52,9 @@ export default function Dashboard() {
     // fetchDados();
   }, []);
 
-  const calcularPorcentagem = (valor, alvo) => {
+  const calcularPorcentagem = useCallback((valor, alvo) => {
     return Math.min(Math.round((valor / alvo) * 100), 100);
-  };
+  }, []);
 
   return (
     <div className="pt-20 pb-20 px-4">
@@ -57,7 +75,7 @@ export default function Dashboard() {
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <div 
             className="bg-green-500 h-2.5 rounded-full" 
-            style={{ width: `${calcularPorcentagem(metricas.caloriasConsumidas, metricas.caloriasAlvo)}%` }}
+            style={{ width: `${porcentagens.calorias}%` }}
           ></div>
         </div>
       </motion.div>
@@ -107,7 +125,7 @@ export default function Dashboard() {
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div 
                 className="bg-blue-500 h-2 rounded-full" 
-                style={{ width: `${calcularPorcentagem(metricas.aguaConsumida, metricas.aguaAlvo)}%` }}
+                style={{ width: `${porcentagens.agua}%` }}
               ></div>
             </div>
           </div>
@@ -126,7 +144,7 @@ export default function Dashboard() {
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div 
                 className="bg-green-500 h-2 rounded-full" 
-                style={{ width: `${calcularPorcentagem(metricas.passosDados, metricas.passosAlvo)}%` }}
+                style={{ width: `${porcentagens.passos}%` }}
               ></div>
             </div>
           </div>

@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import { PersonIcon, BellIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function TopBar({ userName }) {
   const [scrollingDown, setScrollingDown] = useState(false); // Estado para controlar a rolagem
   const [lastScrollY, setLastScrollY] = useState(0); // Armazena a última posição do scroll
   const [showModal, setShowModal] = useState(false); // Controle de visibilidade do modal
   const [notifications, setNotifications] = useState([]); // Lista de notificações
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,7 +29,7 @@ export default function TopBar({ userName }) {
   }, [lastScrollY]);
 
   const handleProfileClick = () => {
-    window.location.href = "/app/profile";
+    router.push("/app/profile");
   };
 
   const handleNotificationClick = () => {

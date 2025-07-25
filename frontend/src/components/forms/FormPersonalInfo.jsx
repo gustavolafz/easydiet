@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const FormPersonalInfo = ({ baseData }) => {
   const [personalData, setPersonalData] = useState({
@@ -14,6 +15,7 @@ const FormPersonalInfo = ({ baseData }) => {
     dietary_preference: "",
     dietary_restriction: [""],
   });
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +50,7 @@ const FormPersonalInfo = ({ baseData }) => {
         throw new Error(loginData.message || "Erro ao fazer login");
 
       alert("Cadastro realizado com sucesso!");
-      window.location.href = "/app/profile";
+      router.push("/app/profile");
     } catch (err) {
       alert(err.message);
     }

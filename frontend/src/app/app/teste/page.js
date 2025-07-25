@@ -1,6 +1,14 @@
-import RecipeCreateForm from '@/components/forms/RecipeCreateForm';
 import { cookies } from 'next/headers';
 import React from 'react';
+import dynamic from 'next/dynamic';
+
+const RecipeCreateForm = dynamic(() => import('@/components/forms/RecipeCreateForm'), {
+  loading: () => (
+    <div className="flex justify-center items-center mt-20">
+      <div className="animate-pulse">Carregando formulário...</div>
+    </div>
+  ),
+});
 
 export const metadata = {
   title: 'Página de Teste',

@@ -1,16 +1,16 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Loader2 } from "lucide-react";
 
-const FormFoodSearch = () => {
+const FormFoodSearch = memo(() => {
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [results, setResults] = useState([]);
 
-    const handleSearch = async () => {
+    const handleSearch = useCallback(async () => {
         if (!searchTerm.trim()) return;
 
         setLoading(true);
@@ -34,7 +34,7 @@ const FormFoodSearch = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [searchTerm]);
 
     return (
         <motion.div
@@ -108,6 +108,6 @@ const FormFoodSearch = () => {
             </div>
         </motion.div>
     );
-};
+});
 
 export default FormFoodSearch;

@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Switch } from "@radix-ui/react-switch";
+import * as Switch from "@radix-ui/react-switch";
 import {
   CheckIcon,
   Cross2Icon,
   ExclamationTriangleIcon,
   ChevronRightIcon,
 } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 export default function Settings() {
   const [notificacoesAtivas, setNotificacoesAtivas] = useState(true);
@@ -19,6 +20,7 @@ export default function Settings() {
   const [unidadeMedida, setUnidadeMedida] = useState("Métrico");
   const [modalAberto, setModalAberto] = useState(false);
   const [modalTipo, setModalTipo] = useState(""); // 'idioma', 'unidade'
+  const router = useRouter();
 
   // Funções para lidar com alterações de configurações
   const toggleNotificacoes = () => {
@@ -189,7 +191,7 @@ export default function Settings() {
         if (response.ok) {
           // Redirecionar para página de login
           alert("Logout realizado com sucesso");
-          window.location.href = "/auth/login";
+          router.push("/auth/login");
         } else {
           throw new Error("Falha ao fazer logout");
         }
@@ -198,7 +200,7 @@ export default function Settings() {
       }
     };
 
-    logoutApi();
+    fazerLogout();
   };
 
   return (
@@ -222,19 +224,19 @@ export default function Settings() {
                 Receba notificações do aplicativo
               </p>
             </div>
-            <Switch
+            <Switch.Root
               checked={notificacoesAtivas}
               onCheckedChange={toggleNotificacoes}
               className={`${
                 notificacoesAtivas ? "bg-green-500" : "bg-gray-300"
               } relative inline-flex h-5 w-10 items-center rounded-full`}
             >
-              <span
+              <Switch.Thumb
                 className={`${
                   notificacoesAtivas ? "translate-x-5" : "translate-x-1"
                 } inline-block h-4 w-4 transform rounded-full bg-white transition`}
               />
-            </Switch>
+            </Switch.Root>
           </div>
 
           <div className="flex items-center justify-between">
@@ -244,7 +246,7 @@ export default function Settings() {
                 Lembretes para registrar suas refeições
               </p>
             </div>
-            <Switch
+            <Switch.Root
               checked={lembreteRefeicoes}
               onCheckedChange={toggleLembreteRefeicoes}
               disabled={!notificacoesAtivas}
@@ -254,12 +256,12 @@ export default function Settings() {
                   : "bg-gray-300"
               } relative inline-flex h-5 w-10 items-center rounded-full`}
             >
-              <span
+              <Switch.Thumb
                 className={`${
                   lembreteRefeicoes ? "translate-x-5" : "translate-x-1"
                 } inline-block h-4 w-4 transform rounded-full bg-white transition`}
               />
-            </Switch>
+            </Switch.Root>
           </div>
 
           <div className="flex items-center justify-between">
@@ -267,7 +269,7 @@ export default function Settings() {
               <h3 className="text-sm font-medium">Lembrete de água</h3>
               <p className="text-xs text-gray-500">Lembretes para beber água</p>
             </div>
-            <Switch
+            <Switch.Root
               checked={lembreteAgua}
               onCheckedChange={toggleLembreteAgua}
               disabled={!notificacoesAtivas}
@@ -277,12 +279,12 @@ export default function Settings() {
                   : "bg-gray-300"
               } relative inline-flex h-5 w-10 items-center rounded-full`}
             >
-              <span
+              <Switch.Thumb
                 className={`${
                   lembreteAgua ? "translate-x-5" : "translate-x-1"
                 } inline-block h-4 w-4 transform rounded-full bg-white transition`}
               />
-            </Switch>
+            </Switch.Root>
           </div>
         </div>
       </motion.div>
@@ -304,19 +306,19 @@ export default function Settings() {
                 Usar tema escuro no aplicativo
               </p>
             </div>
-            <Switch
+            <Switch.Root
               checked={temaEscuro}
               onCheckedChange={toggleTemaEscuro}
               className={`${
                 temaEscuro ? "bg-green-500" : "bg-gray-300"
               } relative inline-flex h-5 w-10 items-center rounded-full`}
             >
-              <span
+              <Switch.Thumb
                 className={`${
                   temaEscuro ? "translate-x-5" : "translate-x-1"
                 } inline-block h-4 w-4 transform rounded-full bg-white transition`}
               />
-            </Switch>
+            </Switch.Root>
           </div>
         </div>
       </motion.div>
@@ -373,7 +375,7 @@ export default function Settings() {
         <div className="space-y-4">
           <button
             className="w-full flex items-center justify-between py-2"
-            onClick={() => (window.location.href = "/app/profile")}
+            onClick={() => router.push("/app/profile")}
           >
             <div>
               <h3 className="text-sm font-medium text-left">Editar perfil</h3>

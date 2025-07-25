@@ -1,6 +1,10 @@
-import EasyDiet from '@/components/pages/Easydiet';
 import { cookies } from 'next/headers';
 import React from 'react';
+import dynamic from 'next/dynamic';
+
+const EasyDiet = dynamic(() => import('@/components/pages/Easydiet'), {
+  loading: () => <div className="flex justify-center items-center h-screen">Carregando...</div>,
+});
 
 export default async function EasyDietPage() {
     const cookieStore = cookies(); 

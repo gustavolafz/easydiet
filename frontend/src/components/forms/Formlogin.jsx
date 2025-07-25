@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import FormPersonalInfo from "./FormPersonalInfo";
+import { useRouter } from "next/navigation";
 
 const FormLogin = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
   const [userData, setUserData] = useState(null);
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -56,7 +58,7 @@ const FormLogin = () => {
       if (!response.ok) throw new Error(data.message || "Erro no login");
 
       alert("Login realizado com sucesso!");
-      window.location.href = "/app/dashboard";
+      router.push("/app/dashboard");
     } catch (err) {
       alert(err.message);
     }

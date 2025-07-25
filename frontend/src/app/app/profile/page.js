@@ -1,6 +1,10 @@
-import Profile from "@/components/pages/Profile";
 import { cookies } from 'next/headers';
 import React from 'react';
+import dynamic from 'next/dynamic';
+
+const Profile = dynamic(() => import("@/components/pages/Profile"), {
+    loading: () => <div className="flex justify-center items-center h-screen">Carregando perfil...</div>,
+});
 
 export default async function ProfilePage() {
 
